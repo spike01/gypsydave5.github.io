@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      home &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/08/16/bitwise-and-permissions/">
+        Bitwise and Permission
+      </a>
+    </h1>
+
+    <span class="post-date">16 Aug 2014</span>
+
+    <p>So I thought I&#39;d try and write about what happened last day of the first week at
+<a href="http://www.makersacademy.com/">Makers</a>, as mentioned in <a href="/2014/08/09/makers-day-five/">my last post</a>, about the failing RSpec test for
+the Unix task. Just because I learned a lot about both permissions on a Unix
+like system, about bitwise operators in Ruby, about how RSpec works, and how
+(not) to fix things.</p>
+
+<p>So... the test checking file permissions in a directory by running the following
+RSpec test.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">it</span> <span class="s2">&quot;Should only allow the owner to change into my/private/files&quot;</span> <span class="k">do</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;my/private/files&quot;</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000010</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000001</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre></div>
+<p>When we first ran it, it failed on the first expectation above - even though we
+knew that the file had the right permissions. So what was going on - both in
+terms of how it was meant to work, and why it wasn&#39;t working?</p>
+
+<h2>Permissions</h2>
+
+<p>Let&#39;s start with that first expectation.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+</code></pre></div>
+<p><code>permissions</code> is a variable representing the result of <code>File.stat(folder).mode</code>,
+where <code>folder</code> is the directory being checked. The <code>mode</code> method <a href="http://www.ruby-doc.org/core-2.1.2/File/Stat.html#method-i-mode">returns the
+permissions-bits of the Unix <code>stat</code> command</a> - which you can take
+a look at in detail with a quick <code>man stat -a</code> (as it&#39;s <code>stat(2)</code> you&#39;re looking
+at.</p>
+
+<p>What does all this mean? It means that we&#39;re getting back an integer which
+represents the current permissions on the file. And how does an integer
+represent permissions? If you&#39;ve been using <code>chmod</code> to change permission with
+commands like <code>chmod go-w filename</code> (remove write from group and others), well
+- you&#39;ve been missing a trick and a whole lot of fun.</p>
+
+<p>The fun way to set permission is using the <em>absolute mode</em>, which sets the
+permissions absolutely every time you use it (rather than relatively removing or
+adding them from the current state - see <code>man chmod</code> for more). There are three
+settings (read, write and execute) for each of the three permissions groups
+(user, group, other) on a file. Each of those permissions sets is represented
+by a single octal digit (from 1 to 7), and the settings are literally added to
+each one - the setting for read is 4, write is 2 and execute is 1.</p>
+
+<p>Any combination of these numbers will produce a unique number - read + write
+= 6, write + execute = 3, just read = 4. And you can combine them into
+a three-digit octal number which represents the file permissions for any given
+file, where the first digit is user, the second is group and the third is other.</p>
+
+<p>In practice: <code>chmod 777</code> gives permissions for everything. <code>chmod 644</code> gives
+read/write to user, and just read to group and other. <code>755</code> is
+read/write/execute for user, and just read/execute for the group and other.</p>
+
+<h2>The science &quot;bit&quot;</h2>
+
+<p>Notice how none of the octal numbers ever &#39;carry&#39; over to the next one when
+they&#39;re added together? This is a piece of computer science wizzardry - because
+they&#39;re in octal, I can look at them as both an actual integer or as a series of
+switches (or maybe dials), setting permissions for each permissions group up and
+down. Thing is, for your computer, these two ways of looking at it <em>are exactly
+the same</em>.</p>
+
+<p><code>777</code> in decimal notation is <code>511</code> (do the maths if you like), but also has
+a binary representation of... <code>111111111</code>. Hey, look - all the 1s! It&#39;s like all
+the switches are turned on - and they really are!. This is because octal digits
+map really neatly to binary digits - they&#39;re a three-digit long collection of
+binary digits. &#39;Binary digit&#39; is a bit of a mouthful (pun intended), so let&#39;s
+use the shorthand word - bit. Each set of three bits represents one of the
+permission statuses for a particular permissions set. So the first three 1s
+above are the permissions for the user, and in particular the first one is the
+read, second write and the third the execute - all set to 1 or &#39;on&#39;.</p>
+
+<p>(Experiment in a Ruby repl like pry or irb - you can switch between binary,
+octal and decimal really quickly in Ruby. Any integer you type in with a leading
+<code>0</code> (say <code>0777</code>) will automatically be translated as an octal (<code>0777</code> will
+return <code>511</code> - the decimal representation). And you can flip to a binary
+representation with <code>to_s(2)</code> - the <code>(2)</code> setting the base of the conversion, so
+that <code>0777.to_s(2)</code> will return <code>&quot;111111111&quot;</code>. Try some other numbers!)</p>
+
+<p>So when <code>mode</code> returns an integer, it&#39;s the integer that represents the current
+permissions on that file - a file with read, write and exeute permissions for
+all the sets would give you the number <code>511</code> (which is the same as <code>777</code> and
+<code>111111111</code>).</p>
+
+<h2>Bitwise</h2>
+
+<p>Now we get to the fun stuff - <code>permissions &amp; 0000100</code>. What&#39;s the <code>&amp;</code> doing? And
+those leading 0s? As mentioned above, the leading zeroes are just Ruby&#39;s way of
+saying that this number is in octal. So (repls open) <code>0000100</code> just becomes
+<code>64</code>. But the thing doing the work here is <code>&amp;</code> - not our friendly Boolean <code>&amp;&amp;</code>,
+but a differnent beast - this is the <a href="http://en.wikipedia.org/wiki/Bitwise_operation#AND"><strong>bitwise AND</strong></a>.</p>
+
+<p>Bitwise operators, of which <code>&amp;</code> is an example, really tear the lid off the
+computer and get a little bit closer to the bare metal. Computers aren&#39;t made of
+objects, or lines of code, strings and integers. They&#39;re made of 0s and 1s. And
+bitwise operators work on 0s and 1s - or, specifically, binary numbers.</p>
+
+<p>Let&#39;s take a pair of binary numbers, say <code>111</code> and <code>100</code> (known to you and me as
+7 and 4). Bitwise AND compares the bit in each position, and asks the question
+&quot;are you both <code>1</code>?&quot; If they are, you get a <code>1</code>, otherwise it&#39;s a <code>0</code>. So <code>111
+&amp; 100</code> will return <code>100</code> as the third bit (counting from the right) is the only
+one that matches in each number</p>
+
+<p>(Think of it just like a regular logical AND - but <code>1</code> is <code>true</code> and <code>0</code> is
+<code>false</code> - running on each bit position.)</p>
+
+<p>We now have enough knowledge to look at the test again</p>
+
+<h2>Back to the test</h2>
+
+<p>To recap, the test looks like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">it</span> <span class="s2">&quot;Should only allow the owner to change into my/private/files&quot;</span> <span class="k">do</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;my/private/files&quot;</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000010</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000001</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre></div>
+<p>The key line being:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+</code></pre></div>
+<p>Now let&#39;s pretend that the directory currently has permissions of <code>700</code> - read,
+write and execute (&#39;execute&#39; is &#39;open&#39; for a folder -- allowing you to <code>cd</code> into
+it). We run <code>mode</code> on it and get the permissions integer back - in octal, that&#39;s
+<code>700</code> again. We then run a bitwise AND - the <code>&amp;</code> against it using the octal
+number <code>100</code> (all those <code>0</code>s at the beginning are just saying &#39;hey! I&#39;m octal!&#39;
+to Ruby).</p>
+
+<p>Converting octal to binary, <code>700</code> is <code>111000000</code>, and <code>100</code> is <code>1000000</code> (Don&#39;t
+trust me? Fire up a repl!). Maybe think of <code>1000000</code> as <code>001000000</code> for the next
+bit. Comparing the two binary numbers, the only place they match is at the
+seventh bit - and so we get <code>1000000</code> as the returned value. Which, in octal is
+<code>100</code> and in decimal is <code>64</code>.</p>
+
+<p>The neat thing about this is that it will return <code>64</code> for any permission set
+that includes user executable permission on a file - <code>700</code>, <code>500</code>, <code>177</code>, <code>355</code>,
+<code>777</code> -- they <em>all</em> work. Say we&#39;ve got <code>355</code> - in binary that&#39;s <code>011101101</code>.
+<code>&amp;</code>ing it with <code>001000000</code> again will give us... <code>001000000</code> again - hey, it&#39;s
+<code>64</code>! Try it with as many numbers as you like.</p>
+
+<p>The other two tests are to check whether the Group or Other sets also have
+execute permission -- that&#39;s <code>010</code> becoming <code>000001000</code> and <code>001</code> to
+<code>000000001</code>, bitwised against the permissions making sure they <em>don&#39;t</em> have that
+bit set. They come out as <code>0</code> -- no matches!</p>
+
+<p>And so that&#39;s how it all hangs together. But why didn&#39;t it work? Simply put
+everyone on the course had just installed the latest version of RSpec, and
+<code>be_true</code> is not in the latest version&#39;s syntax. So all we needed to do was
+change <code>be_true</code> over to <code>eq(64)</code> and it would&#39;ve been fixed.</p>
+
+<p>Of course, that&#39;s not what we <em>actually</em> did. What we did was hack around until
+it worked, and even then we ended up with <code>is_not eq(0)</code> instead of the neater
+(and more correct) answer of <code>eq(64)</code>. It was only when thinking about it over
+the weekend that I really got a handle on what was going on</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/08/09/makers-day-five/">
+        Makers: day 5
+      </a>
+    </h1>
+
+    <span class="post-date">09 Aug 2014</span>
+
+    <p>I thought I&#39;d be writing a blog post everyday about my experience at
+<a href="http://www.makersacademy.com/">Makers</a>. Or at least every two days. That went out of the window pretty
+damn quickly. Things move quickly, so let&#39;s go for a quick update and review
+before I get along with my Saturday...</p>
+
+<h2>Day -2</h2>
+
+<p>Headed to the graduation of the cohort 12 weeks ahead of ours and met some of
+the guys joining me in the August group, as well as the &#39;seniors&#39; (that&#39;s
+seniors by a full 6 weeks -- I don&#39;t thinks they&#39;ll be taking my lunch money).
+Got to see the different final projects that had been created -- really
+beautiful stuff such as the artist portfolio site, and a fun way to work out
+which film to watch with your friends using the IMDB API. I was struck with how
+polished these projects looked - fleshed out and beautiful.</p>
+
+<h2>Day 0</h2>
+
+<p>First day. Start early and meet everyone. We all introduce each other with
+interesting facts (much antipathy towards mushrooms), and the Makers team do the
+same. Many of the names have sinces wondered off into the sunset of my memory,
+but we&#39;re mainly being taught by <a href="https://github.com/ecomba">Enrique</a>, <a href="https://github.com/Stephen_lloyd">Stephen</a> and <a href="https://github.com/roidriscoll">Roi</a> who&#39;s the TA
+(and who has <em>only just finished the course</em> -- amazing) at the moment.</p>
+
+<p>Our first challenge is to get set up and create a web app that generates
+motivational posters from a Google image search. In one day. And, amazingly, we
+all manage it. There&#39;s some pretty hairy moments to begin with (imagine a room
+full of people all downloading the same software at the same time using the same
+WiFi). But it happens.</p>
+
+<p>I asked Enrique whether I should stick with the Linux laptop or try out one of
+the MacBook Pros the Makers kindly offer for students to borrow during the
+course. He used to use Linux himself but was converted in a single day having
+borrowed a friend&#39;s. So I thought I&#39;d try it out...</p>
+
+<p>I&#39;m typing this on the Mac. Enough said.</p>
+
+<h2>Day 1</h2>
+
+<p>And it&#39;s straight into the first project - creating a student directory for our
+cohort using Ruby and the command line. We&#39;re all at different levels of
+experience at the moment - I&#39;d describe myself as confident with a CLI and Ruby
+having prepared (over-prepared?) extensively for the last few... months (I was
+just looking at GitHub and I&#39;ve been pushing there since February. Time flies!).
+The exercises are kept as a text document on GitHub with links to pills on how
+to use Git and the Unix command line. I pair with <a href="https://github.com/flickoid">Chris</a> who I&#39;d met on the
+open day. We have a great time getting through the work.</p>
+
+<h2>Day 2</h2>
+
+<p>There are lectures throughout the day -- one in the morning and one in the
+afternoon -- with additional talks during the day from other people coming in to
+the building. Today was the turn of the technology heads from <a href="http://www.typematrix.com/">Compare the
+Market.com</a> to talk to us. It was interesting to hear them talk about
+how their technology and culture had chnged over the last ten years, especially
+the shift to an Agile culture. The more I hear and read about Agile the more
+excited it makes me feel about working as a programmer - not just writing code
+but having a wide-ranging input into what is being developed. It was also cool
+to hear the coders described as being, essentially, &#39;customer-facing&#39; -- that
+they were the closest staff memebers to actual customer experience and so were
+expectd to both feedback as such, generate ideas, and importantly care for the
+web app all the time, with flexible working hours. I&#39;d never thought of it that
+way, but in a world where a company&#39;s only contact with their customers is
+through the web, coders become the customer facing members of staff with all th
+responsibility that entails.</p>
+
+<p>We also get talks from the cohort above us -- the seniors. It&#39;s great seeing
+these guys wanting to pass on the knowledge, the hints, the tricks -- everything
+they&#39;ve picked up in the last few weeks, on to us. This tradition started
+spontaneously but fits so well with the ethos of Makers. I&#39;m looking forward to
+maybe doing one myself.</p>
+
+<p>Erique talks about his keyboard layout for five minutes today -- well maybe more
+than five minutes. Not only is he a Vi(m) weezard but he also uses (1) COLMAC
+layout on both (2) the MacBook if he&#39;s out and about or (3) the <a href="http://www.typematrix.com/">scariest
+keyboard in the world</a> if he&#39;s wanting to type a lot.</p>
+
+<p>Vim is enough for me, although Andy in our cohort borrows the keyboard for a day
+and starts to learn COLMAC. Brave.</p>
+
+<h2>Day 3</h2>
+
+<p>I&#39;m ahead. A few of us are ahead. In fact a few of us are wondering why we&#39;re
+not useing OOP methods to write this code because, frankly, it&#39;s looking a bit
+messy right now. My code is particularly awful until [Ben] and I chat about it
+and he suggests refactoring to make more but shorter methods with much better
+names. I kick myself -- I knew that! -- but bad habits die hard.</p>
+
+<p>But I don&#39;t mind being ahead -- I&#39;m not straining at the bit. At the beginning
+Enrique and Stephen said that we&#39;re as strong as our weakest member, and that we
+should never leave a man behind. I think of my cohort as a team, and I&#39;m
+responsible. So I float around answering questions and trying to help out where
+I can. I had a great moment in the morning with <a href="https://github.com/ruthearle">Ruth</a> in which we both learned
+new things about symbols, and I&#39;ve enjoyed speaking to <a href="https://github.com/silver-io">Javier</a> about -- well
+lots of things. We have pretty similar motivations for getting in to Makers; we
+both want a better, more fulfilling work life. I&#39;m more sure now that I&#39;ve found
+it.</p>
+
+<p>And I like talking about code! I hadn&#39;t realised that this is what I was missing
+so much. Talking and working everyday in Ruby has increased my confidence and my
+knowledge. Helping others helps yourself, teachers learn more from their
+students. The last time I felt this way was at University, and it&#39;s a great
+feeling.</p>
+
+<p>Stephen and Roi introduce the finer points of using Git today in a fantastic
+lecture. I&#39;ve found myself getting tangled up in my own branches so much that it
+was good to have things explained carefully and accurately, and with
+a demonstration as well. I learned a lot.</p>
+
+<h2>Day 4</h2>
+
+<p>Test Driven Developmet (TDD) drops with a bang today as Enrique and Stephen
+introduce <a href="http://rspec.info/">RSpec</a> and a completely different way of writing code. Really.
+I&#39;d heard of TDD, I&#39;d heard people moan about or praise it -- but I&#39;d not
+seen it until Enrique started hammering away at Vim on the projector to create
+<a href="https://ithub.com/gypsydave5/fizzbuzz">FizzBuzz</a> by first defining what the code ought to be doing and then making it
+do it, then expanding the spec&#39;, making the code fail, making the code pass,
+expanding the spec&#39;... repeat, rinse... it was amazing. He hooked it up with the
+idea of both the scientific method and a good doctor washing their hands. And it
+made sense -- declaring where you&#39;re going and then getting there, rather than
+just blindly, messily, hacking around until something drops out.</p>
+
+<p>We should be able to repeat these steps, write a FizzBuzz implementation using
+TDD, in less that five minutes. My first try was 33. I think it&#39;s a great way to
+practice.</p>
+
+<p>We also had a talk by <a href="https://twitter.com/rubenkostucki">Reuben</a> and Sam who both work to get Makers students
+placements when they graduate. It was a really good idea to have them introduce
+themselves and talk about what we could do to make their lives (and so our lives)
+easier. Which boiled down to:</p>
+
+<ol>
+<li>Pair. A Lot.</li>
+<li>Always TDD. Always.</li>
+<li>Push often and always to GitHub.</li>
+<li>Don&#39;t worry about the job. Do the course.</li>
+</ol>
+
+<p>Which was a load off everyone&#39;s mind.</p>
+
+<p>The Friday Challenge was CLI based, so I waltzed blithly through (and had
+a really good time remembering some fun commands). Excitingly it was marked with
+an RSpec file which checked whether your changes &#39;passed&#39; -- literally.
+Unfortunately the file was written in an earlier version of the RSpec syntax and
+so the tests failed even when they should&#39;ve passed. So <a href="https://github.com/spike01">Spike</a> and I got to do
+our own Friday Challenge and fix the RSpec file. I say challenge -- we made more
+of a mountain out of that molehill than maybe we should&#39;ve, but we learned a lot
+about octal, binary, Unix permissions and bitwise operators on the way, as well as Rspec.</p>
+
+<p>Mulling over what was going on with <code>permissions &amp; 0000100</code> while leaning on
+a beanbag, talking the problem through with a new friend while drinking a cold
+beer at six-thirty on a Friday, I felt happier than I have in years. In the last
+week I&#39;ve literally eaten and slept code (I dreamed in Ruby one night. It was
+odd) almost every hour of the day. And I love it.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/07/28/one-week/">
+        One week to go
+      </a>
+    </h1>
+
+    <span class="post-date">28 Jul 2014</span>
+
+    <p>For those who know me, or have been following my <a href="https://twitter.com/gypsydave5">Twitter feed</a>, you may
+know that I&#39;ll be starting at <a href="http://www.makersacademy.com/">Makers Academy</a> on the 4th of August.
+That&#39;s in a week&#39;s time. Part of the reason I&#39;ve been keeping this blog is to
+monitor my progress in preparing for that day.</p>
+
+<p>So, why Makers?</p>
+
+<p>My New Year&#39;s resolution was to change my life (aren&#39;t they always?). I didn&#39;t
+want to spend the next thirty-plus years working in a career I was adequately
+suited for (marketing) and being the guy in the department who got to do all the
+maths-y/computery stuff while not being at all enthusiastic about... well, about
+everything else he was doing. At the time I was having a terrible time in my job</p>
+
+<p>I sought advice from everyone I knew, and talked incessantly about software
+development with anyone who would listen. I&#39;m blessed with good, patient friends
+who were happy to put up with this, a number of who work in the industry
+already. They&#39;ve steered me and mentored me over the last few months
+(specifically <a href="https://twitter.com/shapeshed">@shapeshed</a> and <a href="https://twitter.com/asbrookes">@asbrookes</a>), shown me where
+<a href="http://www.codecademy.com/">codecademy</a> was, and generally answered any of my questions.  I recognised
+that this career change was going to work - the more I learned the more I wanted
+to learn, and the more there was to learn the more a learned (a happy virtuous
+circle). An interest in tech and programming became a passion (my partner can
+attest to this - barely an evening without being glued to the laptop, tapping
+away).  I became confident in my decision.</p>
+
+<p>I mentioned my intentions to my friend Mike. &quot;Oh,&quot; he said, &quot;sort of like what
+<a href="https://twitter.com/jamesjoshuahill">Josh</a> did at that Maker&#39;s place?&quot; So I caught up with Josh who raved
+about his experience, the atmosphere and the amount he learned. I showed the
+course to my other dev friends. They hadn&#39;t heard of Makers, but were generally
+impressed by the programme. One expressed concern about the Ruby/Rails focus, in
+a world where <a href="http://nodejs.org/">NodeJS</a> was becoming the next big thing. They suggested
+I ask the question.</p>
+
+<p>So I wrote a short email to Makers, saying - &#39;hey, why Rails?&#39; And I got a well
+thought out, well written, extensive email in reply, arguing that, yes, Node was
+important, but that Makers teachers how to be a developer in a culture/method
+sense of that word, and that Rails was just a good platform to start from - not
+the be all and end all.</p>
+
+<p>Cost was of course an issue - nobody spends the best part of £10,000 pounds on
+a whim. And if I could achieve the same results just through educating myself
+the Makers experience would be pointless. But I know a few things about myself:</p>
+
+<ol>
+<li>I <em>like</em> difficult things</li>
+<li>I work in intense bursts</li>
+<li>I work best under pressure</li>
+<li>I prefer to be in a gang working towards the same goal</li>
+</ol>
+
+<p>I know that I&#39;d work best with a goal, in an immersive environment, surrounded
+by bloody clever people all working towards the same thing and supporting each
+other. It&#39;s what saw me through University. I took particular note of <a href="http://www.startuprob.com/learn-to-code/">this
+article</a> by one of the co-founders of Makers, <a href="https://twitter.com/startuprob">Rob Johnson</a>.
+I also knew that I couldn&#39;t hang around, that if this was the right decision
+then it was the right decision <em>now</em>, and it had to happen as quickly and
+efficiently as possible.</p>
+
+<p>I looked at other other bootcamps, mainly <a href="https://generalassemb.ly/london">General Assembly</a>, who definitely
+have scale and experience on their side. But I was sold on Makers after spending
+some time with the other finalists of the <a href="http://blog.skimlinks.com/2014/03/12/skimlinkstomakers-competition-introducing-the-finalists/">#SkimlinksToMakers</a> competition
+during the final interviews, and at the Makers open days. Meeting the
+instructors (I especially remember talking with <a href="https://twitter.com/rubenkostucki">Ruben</a> - and a slightly
+confusing attempt to talk with passion about <em>Person of Interest</em>, the Turing
+test, chess and some other things. Enthusiastic, yes. Coherent...?). I also read
+the (numerous) blogs of former students - I found <a href="http://davewood.me/blog/2014/01/18/makers-academy-rewound/">Dave Wood</a>&#39;s
+description pretty exciting and useful, and of course <a href="http://jamesjoshuahill.tumblr.com/">Josh</a>&#39;s. I also
+had a forty-minute phone conversation with <a href="https://twitter.com/JordanPoulton">Jordan</a> (he sent the great
+email), who again answered all my questions in an open, non-salesy way. He&#39;d
+<a href="http://www.jordanpoulton.com/blog/makers-academy-12-hours-to-lift-off/">done the course himself</a>, which gave a unique perspective, and
+spent at least ten minutes trying to put me off.</p>
+
+<p>He failed. I applied. The interview went well (Jordan again - felt like he was
+stalking me...), although it was far from a push over (it&#39;s amazing how difficult
+basic maths when someone&#39;s looking over your shoulder - and a US keyboard
+layout threw me for at least a minute...). But I left wanting to get in more
+than ever, and did a (pretty big) whoop of joy when I received the email telling
+me that I had been accepted.</p>
+
+<p>So here I am, feeling pretty ready. Nervous, and excited. I&#39;ve studied some of
+the basics as hard as I could, know more about Ruby than I did six months ago,
+and eager for more. I&#39;m really looking forward to learning something new
+everyday. First step is meeting the rest of my cohort this Friday (exciting!). I&#39;ll be
+blogging as I go along (probably nowhere near as extensively as this), just to
+keep a record on how I&#39;m doing.</p>
+
+<p>But, so far, it looks like this is my best New Year&#39;s resolution. Ever.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/07/18/ruby_enumerable_returns/">
+        Many Enumerable Returns
+      </a>
+    </h1>
+
+    <span class="post-date">18 Jul 2014</span>
+
+    <p>As threatened then, here&#39;s the followup to my <a href="/2014/07/12/destructuring/">last post</a> on the
+<code>#Enumerables</code> section from <a href="https://rubymonk.com/">Ruby Monk</a>, how I felt like a bit of an
+idiot for a few hours, and what I learned from that.</p>
+
+<p>tl;dr - enumerable blocks aren&#39;t magic; <code>yield</code> is magic.</p>
+
+<p>This question is a little further along from the last, and was framed so:</p>
+
+<blockquote>
+<p>Try implementing a method called occurrences that accepts a string argument and
+uses inject to build a Hash. The keys of this hash should be unique words from
+that string. The value of those keys should be the number of times this word
+appears in that string.</p>
+</blockquote>
+
+<p>So far so, so good. So I wrote this:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+  <span class="n">str</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w+/</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="n">hashy</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span>
+    <span class="n">hashy</span><span class="o">[</span><span class="n">i</span><span class="o">.</span><span class="n">downcase</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Which spat out:</p>
+
+<blockquote>
+<p><code>TypeError
+can&#39;t convert String into Integer</code></p>
+</blockquote>
+
+<p>And left me confused for a good few minutes. OK, getting on for a quarter of an
+hour. What was going on? - what I&#39;d written was very similar to the example
+above:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">42</span><span class="o">].</span><span class="n">inject</span><span class="p">({})</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="p">)</span> <span class="p">}</span></code></pre></div>
+
+<p>So I caved and looked at the answer:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+    <span class="n">str</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w+/</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="n">build</span><span class="p">,</span> <span class="n">word</span><span class="o">|</span>
+        <span class="n">build</span><span class="o">[</span><span class="n">word</span><span class="o">.</span><span class="n">downcase</span><span class="o">]</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="n">build</span>
+    <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Which left me none the wiser. Why was the block re-iterating the accumulator
+function at the end? To test this I played around with <code>p</code>-ing the lines of the
+block... and discovered something interesting. Namely,</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="p">)</span> <span class="c1"># =&gt; a</span>
+
+<span class="c1"># But...</span>
+
+<span class="n">build</span><span class="o">[</span><span class="n">word</span><span class="o">.</span><span class="n">downcase</span><span class="o">]</span> <span class="o">+=</span><span class="mi">1</span> <span class="c1"># =&gt; build[word.downcase], the new value of that key</span></code></pre></div>
+
+<p>The block <em>needs to return the accumulator</em> - the first example is just lucky
+that it does so already!</p>
+
+<p>The only reason the accumulator in an <code>Enumerable#inject</code> accumulates is that
+<em>it&#39;s returned from the block on each iteration</em>. In other words, somewhere in
+the definition of <code>#inject</code> for each class that can be made enumerable, the
+method <code>yield</code>s to the block, and then keeps the value returned to be passed in
+again as the new accumulator argument.</p>
+
+<p>I&#39;d previously thought of <code>#inject</code> as working by <em>magic</em>, whereas in fact it
+was working by a method I could probably write myself given enough time.
+Something like this...</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bob</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="o">]</span>
+
+<span class="k">def</span> <span class="nc">bob</span><span class="o">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="n">accumulator</span> <span class="o">=</span> <span class="n">default</span> <span class="o">||</span> <span class="nb">self</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+  <span class="k">if</span> <span class="n">default</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">element</span><span class="o">|</span>
+      <span class="n">accumulator</span> <span class="o">=</span> <span class="k">yield</span><span class="p">(</span><span class="n">accumulator</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">else</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">element</span><span class="o">|</span>
+      <span class="n">accumulator</span> <span class="o">=</span> <span class="k">yield</span><span class="p">(</span><span class="n">accumulator</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+  <span class="nb">puts</span> <span class="s2">&quot;all adds up to: &quot;</span>   <span class="c1"># just to prove it&#39;s this method being</span>
+                            <span class="c1"># called, not the superclasses...</span>
+  <span class="nb">p</span> <span class="n">accumulator</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Which gives us such fun as:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">()</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span> <span class="o">+=</span> <span class="n">e</span><span class="p">}</span>
+<span class="c1"># =&gt; all adds up to: 21</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span> <span class="o">+=</span> <span class="n">e</span><span class="p">}</span>
+<span class="c1"># =&gt; all adds up to: 31</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="p">}</span>
+<span class="c1"># =&gt; all adds up to: [1, 4, 9, 16, 25, 36]</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">({})</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span><span class="o">[</span><span class="n">e</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="o">*</span><span class="n">e</span><span class="p">;</span> <span class="n">a</span><span class="p">}</span>
+<span class="c1"># =&gt; {5=&gt;&quot;xxxxx&quot;, 6=&gt;&quot;xxxxxx&quot;, 1=&gt;&quot;x&quot;, 2=&gt;&quot;xx&quot;, 3=&gt;&quot;xxx&quot;, 4=&gt;&quot;xxxx&quot;}</span></code></pre></div>
+
+<p>I relied on <code>#each</code> here, but we could easily write an <code>each</code> method using
+a <code>for... in...</code> loop or similar. The genius is in <code>yield</code>, which is the <em>real
+magic</em> that&#39;s going on here.</p>
+
+<p><a href="https://rubymonk.com/">Ruby Monk</a> has more about the <a href="http://rubymonk.com/learning/books/1/chapters/34-lambdas-and-blocks-in-ruby/lessons/78-blocks-in-ruby">magic of yield</a>, and why it&#39;s
+weird in a language that professes that everything is an object. Like a lot in
+Ruby, I discovered a small thing didn&#39;t work, patiently played with it until
+I found out why, and then &#39;worked&#39; that small new piece of knowledge to give me
+greater insight into what was going on. I&#39;m finding this to be the most
+satisfying method to learn by, both because it makes me feel like I&#39;m learning
+to a deeper degree than I would by just reading the answers out of a book, and
+in addition, when the books do cover the subject, I can better apply what&#39;s
+written there to what I&#39;ve seen in action.</p>
+
+<h3><em>postscipt</em> - 27/714</h3>
+
+<p>Of course, David Black covers the same ground, but better (gets <code>each</code> off the
+ground using a <code>for</code> loop), in chapter 6 of <a href="http://www.manning.com/black2/"><em>The Well Grounded Rubyist</em></a>. Love that
+book.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/07/12/destructuring/">
+        Destructuring in a Method Block
+      </a>
+    </h1>
+
+    <span class="post-date">12 Jul 2014</span>
+
+    <p>I went from genius to idiot - very rapidly - when looking at Enumerable#map and
+#inject in <a href="https://rubymonk.com/">Ruby Monk</a>, a free resource to help learn ruby that I&#39;ve
+found really useful. Let&#39;s start with &#39;genius&#39; (although not really genius, more
+wrong but lucky).</p>
+
+<p>The <a href="https://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/44-collections/lessons/98-iterate-filtrate-and-transform#solution4313">question</a> was as follows:</p>
+
+<blockquote>
+<p>Exploit the fact that map always returns an array: write a method <code>hash_keys</code>
+that accepts a hash and maps over it to return all the keys in a linear Array.</p>
+</blockquote>
+
+<p>Exciting, right?</p>
+
+<p>The solution that RM gave was this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hash_keys</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="nb">hash</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">pair</span><span class="o">|</span> <span class="n">pair</span><span class="o">.</span><span class="n">first</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>But I went for:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hash_keys</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="nb">hash</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="o">|</span> <span class="n">key</span><span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Not much difference, but enough. I had become confused when I entered my code,
+thinking more about the <code>each_with_index</code> method mentioned in the same page
+above. I was forgetting that <code>#map</code> would be sending back a single value, an
+array of the key-value pair. Ruby Monk&#39;s solution used that fact to use the
+method <code>#first</code> on the array, to get the first element (the key) out.</p>
+
+<p>But, by chance, my solution worked - it split the array by telling the
+block for map that it would be getting two arguments - checking with the good
+people on the #ruby channel on IRC (a chap called bannisterfiend to be precise),
+this is <a href="http://tony.pitluga.com/2011/08/08/destructuring-with-ruby.html"><em>destructuring</em></a>, binding a set of values to
+a corresponding set of values that you can normally bind to a single variable
+(that&#39;s the definition as given in <a href="http://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node252.html">Common Lisp</a>, but makes sense here).</p>
+
+<p>What we&#39;re seeing is this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span>
+<span class="n">x</span> <span class="c1"># =&gt; 1</span>
+<span class="n">y</span> <span class="c1"># =&gt; 2</span>
+</code></pre></div>
+<p>But done as a loop for all the arrays pulled out of the hash by <code>#map</code>. Tony
+Pitluga sings the praises of destructuring block arguments (which is what this
+is) in his longer article on <a href="http://tony.pitluga.com/2011/08/08/destructuring-with-ruby.html">destructuring in Ruby</a>.</p>
+
+<p>There&#39;s an improvement in the semantics of the method (would you rather have
+<code>key</code> or <code>pair.first</code>?) and a saving of writing/time in any later work you might
+want to do on the values. Of course, we wouldn&#39;t want to do this to longer
+arrays - too many elements to bind to values.</p>
+
+<p>Unless we used the &#39;unarray&#39; or, &#39;star&#39; or (best name evar) <a href="http://endofline.wordpress.com/2011/01/21/the-strange-ruby-splat/">splat
+operator</a> to collect some of the other elements.</p>
+
+<p>Consider:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="n">j</span>
+<span class="n">x</span> <span class="c1"># =&gt; 1</span>
+<span class="n">y</span> <span class="c1"># =&gt; [2,3,4,5,6]</span>
+</code></pre></div>
+<p>There&#39;s a lot more on the magic of the splat in the second edition of <a href="http://www.manning.com/black2/">The Well
+Rounded Rubyist</a> which has just been published (and which I&#39;m enjoying
+immensely).</p>
+
+<p>OK, I&#39;ll write up my other mistake (the one that broke the <code>#map</code> block) later in
+the week.</p>
+
+<p>PS - noticed when getting links for this post that Ruby 2.0 introduces the
+double-splat operator for <a href="http://stackoverflow.com/questions/18289152/what-does-double-splat-operators-do-in-ruby">turning keyword-value pairs in argument lists into
+a hash</a>. Which is also exciting.</p>
+
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <a class="pagination-item older" href="/page6">Older</a>
+  
+  
+    
+      <a class="pagination-item newer" href="/page4">Newer</a>
+    
+  
+</div>
+    </div>
+
+  </body>
+</html>

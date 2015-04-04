@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Vimmified! &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Vimmified!</h1>
+  <span class="post-date">14 Jun 2014</span>
+  <p>I&#39;m not sure why I&#39;ve started to use Vim obsessively over the last week - there
+are a number of factors feeding in, mostly centred around my perverse need to do
+make something more difficult than is strictly necessary; I&#39;m learning Vim
+&quot;Because it&#39;s there&quot;...</p>
+
+<p>That&#39;s not strictly true - if I&#39;m going to blame something it&#39;s going to be
+Windows Vista. Or, more speifically, the way Windows Vista insists on
+sporadically freezing my mouse for 10-20 seconds every fifteen minutes or so.
+It starts to add up, killing the flow of the work and slowing me down no end.</p>
+
+<p>So I discovered <a href="https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?hl=en">Vimium</a>, an extension for Chromium that puts all the
+Vim keys into the browser. If you&#39;ve used the shortcut keys in Twitter you&#39;ll be
+right at home (the same with Gmail&#39;s shortcuts but slightly less so). It&#39;s not
+only let me circumvent my mouse when it freezes; I&#39;ve found myself using it in
+preference to the mouse in most cases, fingers sitting happily on the home keys
+as I navigate around the web, mostly without any hold ups. Even if you don&#39;t
+think you&#39;ll use it it&#39;s worth installing just to see the way it implements link
+clicking.</p>
+
+<p>So having got this far it felt churlish not to go and install Vim, by way of the
+Windows build of <a href="http://www.vim.org/download.php">Gvim</a>. Now, while I&#39;m trying to wean myself off Windows
+(made much easier by having a Vista box at work), I am still forced to use it
+(oh that Vista box at work). I&#39;d been happy up to now with <a href="http://www.sublimetext.com/3">Sublime Text
+3</a>, which I have synced across all my computers and which also implements
+a <a href="http://www.sublimetext.com/docs/3/vintage.html">&#39;Vintage&#39;</a> (should that be &#39;Vimtage&#39;) mode with a most of the Vim
+commands intact. But it&#39;s always worth trying new things I figured, and getting
+Vim going nicely on Windows seemed like a fun challenge.</p>
+
+<p>Challenge it was. I love the Sublime Text <a href="https://sublime.wbond.net/">Package Manager</a>, which
+beautifully lists and installs packages from Sublime Text itself. Very cool.
+Looking for something similar in Vim I found <a href="https://github.com/gmarik/Vundle.vim/wiki/Vundle-for-Windows">Vundle</a>, which installs
+Vim packages directly from Github, locally, or almost anywhere, when they&#39;re
+listed in the <code>.vimrc</code> configuration file. Like everything in the open-source
+community it&#39;s all geared up for *nix systems, so takes <a href="https://github.com/gmarik/Vundle.vim/wiki/Vundle-for-Windows">a little bit of
+tweaking</a> to get going on Windows.</p>
+
+<p>Even more tweaking was required when I decided to take a great leap forward and
+put <a href="https://github.com/zaiste/vimified">Vimified</a> on as well, a starting collection of packages for Vim.
+Which of course was also <a href="http://kaszkowiak.eu/windows-vimified/">fraught on Windows</a>. But ultimately
+successful (even if I did seem to spend at least three days getting the
+<a href="https://github.com/bling/vim-airline">Airline/Powerline</a> status bar fonts working).</p>
+
+<p>Half the fun of this little project has been learning how to edit the .vimrc
+file - and by extension all *nix config files. More confidence at the command
+line can only be a good thing, and a good poke around the workings of Linux has
+made me feel a little more confident (even so far as to getting the
+<a href="https://github.com/Lokaltog/powerline">Powerline</a> fonts working in Bash).</p>
+
+<p>What strikes me as I write this (in Vim - but on the Linux box at home) about
+a month on is how swiftly the Vim keys have worked themselves into my average
+workflow. I find it faster to open new lines, append lines, and navigate with
+J/K than arrows.  Combined with Alt-Tabbing between windows, and Vimium in the
+browser, I haven&#39;t touched the mouse in creating this document - including all
+the copy-pasting of links. I haven&#39;t even left the home keys.</p>
+
+<p>I&#39;m not quite happy to leave Sublime Text yet - but I&#39;m certainly seeing my way there.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

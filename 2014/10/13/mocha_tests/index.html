@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Mocha tests with MongoDB and Mongoose &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Mocha tests with MongoDB and Mongoose</h1>
+  <span class="post-date">13 Oct 2014</span>
+  <p>I&#39;ve been continuing my assault on Node.js - I refuse to let it lie. I decided
+two weeks ago to try and get a version of the Makers Academy chitter project (a
+twitter clone) up and running using Node, Express and - because you may as well
+go straight in at the deep end - MongoDB. Let&#39;s call it &#39;Chitter.js&#39;.</p>
+
+<p>The biggest pain I&#39;ve had is getting the tests to run. This may not sound like
+a big deal to someone on the outside, but without tests I feel a little lost --
+I mean, how do you know if what you&#39;re doing is working? Or your refactoring
+hasn&#39;t changed anything?</p>
+
+<p>Anyway, enough of the TDD rant - and maybe let&#39;s just approach this as an
+intellectual exercise. Mocha is the test framework we&#39;re using -- along with
+the Chai library of assertion (so I can write <code>expect</code>) a lot.</p>
+
+<p>Now the first thing to bear in mind is just how asynchronous <em>everything</em> is
+when working in JavaScript. You may <em>think</em> you understand, but you proaably
+don&#39;t. My entire cohort at Makers is replete with tales about testing in Mocha
+(&quot;It passed one time -- but then it didn&#39;t&quot; ... &quot;I ran it, it should&#39;ve failed.
+But it passed. Twice.&quot;).</p>
+
+<p>Happily Mocha gives us <code>done</code>. You can pass any test block (OK, not block,
+anonymous function. But I&#39;m Ruby till I die) an argument of <code>done</code>, which is
+a function you can call when the test is... well, when the test is done. It
+basically means that you can make thinga happen when you want them to happen,
+and not in faster-than-a-speeding-bullet JS timeframes.</p>
+
+<p>So, here&#39;s a test straight out of my actual project. The key thing to note is
+the fact that the expectations are sitting in the callback for the <code>save</code>
+function - you&#39;ll only want to test the database once the save has saved (i.e.
+once its calledback).</p>
+
+<p>(The following is all in CoffeeScript - which I&#39;m agnostic about. It definitely
+has the advantage of brevity, which is a quality all of its own.)</p>
+<div class="highlight"><pre><code class="language-coffee" data-lang="coffee"><span class="nx">it</span> <span class="s">&#39;saves users&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+    <span class="nv">bob = </span><span class="k">new</span> <span class="nx">user</span> <span class="p">{</span><span class="nv">username: </span><span class="s">&quot;bob&quot;</span><span class="p">,</span> <span class="nv">password: </span><span class="s">&quot;pisswird&quot;</span><span class="p">}</span>
+    <span class="nx">bob</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(error, saved_bob) -&gt;</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">saved_bob</span><span class="p">.</span><span class="nx">username</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">equal</span> <span class="s">&quot;bob&quot;</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">saved_bob</span><span class="p">.</span><span class="nx">password</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">equal</span> <span class="s">&quot;pisswird&quot;</span>
+        <span class="nx">done</span><span class="p">()</span>
+</code></pre></div>
+<p>You would expect this to run, test the expectations, and then let you know it&#39;s
+all finished with the <code>done()</code> call at the end of the callback. And it does do
+exactly that -- but only so long as the expectations pass. If they don&#39;t the
+whole thing just times out - which is not what we&#39;re after.</p>
+
+<p>I tried a number of solutions to this problem (in fact the above <em>is</em> one of
+those solutions - the first attempts were even more worthless), including a few
+experiments with the <a href="http://chaijs.com/plugins/chai-as-promised">Chai as
+Promised</a> library which includes
+such great statements as <code>to.eventually.deep.equal</code> But the problem wasn&#39;t
+resolved until I hit upon the following pattern:</p>
+<div class="highlight"><pre><code class="language-coffee" data-lang="coffee">  <span class="nx">it</span> <span class="s">&#39;saves users&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+    <span class="nv">user = </span><span class="k">new</span> <span class="nx">User</span> <span class="p">{</span><span class="nv">username: </span><span class="s">&quot;bob&quot;</span><span class="p">,</span> <span class="nv">password: </span><span class="s">&quot;pisswird&quot;</span><span class="p">}</span>
+    <span class="nx">user</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(error, saved_user) -&gt;</span>
+      <span class="k">try</span>
+        <span class="nx">expect</span><span class="p">(</span> <span class="nx">saved_user</span><span class="p">.</span><span class="nx">username</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">eql</span> <span class="s">&quot;bob&quot;</span>
+        <span class="nx">done</span><span class="p">()</span>
+      <span class="k">catch</span> <span class="nx">error</span>
+        <span class="nx">done</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+</code></pre></div>
+<p>What wizardry is this? Let me try to explain...</p>
+
+<ol>
+<li>The reason everything timed out on the expectation failing was that the
+expectation statement is no longer in the scope of the <code>it()</code>.</li>
+<li>Expectations pass when they pass -- but when they fail they raise an
+exception which is caught by the <code>it()</code> function the whole lot is wrapped in.</li>
+<li>So when the statement goes out of scope, it means that the error never
+&#39;bubbles up&#39; to the <code>it</code>, the <code>done()</code> never gets called, and the whole thing
+just times out.</li>
+<li>So we need a way to send the error for the failed expectation up to the <code>it()</code>.</li>
+<li>This is where the <code>try/catch</code> comes in - if the expectation fails it raises an
+error that then gets passed to the <code>done</code> function in the catch - which the
+<code>done</code> then dutifully carries back up to the <code>it</code> with the essential error
+information about what exactly went wrong.</li>
+</ol>
+
+<p>And so now we can write tests. Hurrah! But, more importantly, we&#39;ve gained an
+insight into how testing frameworks work. When I first encountered testing in
+RSpec I went through the various patterns of test as ritual -- &#39;this is how you
+do it&#39; -- but the more I work with tests the more I&#39;m respecting the hard work
+that&#39;s gone in to making them look like magick.</p>
+
+<p>So I&#39;m really greateful for Mocha being a bit of a pain to test with over the
+last few weeks, as it&#39;s made me have to think a bit harder about testing in
+general and the dark arts of JS.</p>
+
+<p>That said, it&#39;s not done much for the development of chitter.js...</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

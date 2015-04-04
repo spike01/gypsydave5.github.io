@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      home &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2015/01/01/Ruby-Eval-in-Vim/">
+        Evaluating Ruby in Vim
+      </a>
+    </h1>
+
+    <span class="post-date">01 Jan 2015</span>
+
+    <p>I was watching <a href="https://twitter.com/avdi">Avdi Grimm</a>&#39;s <a href="http://www.rubytapas.com/">Ruby Tapas</a> videos - well, trying to watch them.
+I got stuck when I saw him do something in <del>Vim</del> Emacs that I&#39;d not seen before.
+Something magical.</p>
+
+<p>On screen he had an expression - something like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">p</span> <span class="o">=</span> <span class="no">Point</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p>In one keypress it became:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">p</span> <span class="o">=</span> <span class="no">Point</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># =&gt;</span>
+</code></pre></div>
+<p>And then quick as a flash:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">p</span> <span class="o">=</span> <span class="no">Point</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># =&gt; #&lt;Point:0x000000038862d0 @x=3 @y=5&gt;</span>
+</code></pre></div>
+<p>I immediately stopped paying attention to the <a href="http://www.rubytapas.com/episodes/7-Constructors?filter=free">excellent video about
+constructors</a> and started to look up what was going on. So here we go down the
+Vim rabbit hole again...</p>
+
+<p>The magic is performed by either <a href="http://rubygems.org/gems/rcodetools">rcodetools</a>&#39; xmpfilter tool or
+<a href="https://github.com/JoshCheek/seeing_is_believing">seeing_is_believing</a>, hooked up to Vim via <a href="https://github.com/t9md/vim-ruby-xmpfilter">vim-ruby-xmpfilter</a>, (which works
+for both) or <a href="https://github.com/hwartig/vim-seeing-is-believing">vim-seeing-is-believing</a>. Take your pick as I can&#39;t really see the
+difference at the moment.</p>
+
+<p>I&#39;ve got xmpfilter set up with the following in my <code>.vimrc</code></p>
+<div class="highlight"><pre><code class="language-vim" data-lang="vim"><span class="k">autocmd</span> <span class="nb">FileType</span> <span class="k">ruby</span> nmap <span class="p">&lt;</span>buffer<span class="p">&gt;</span> <span class="p">&lt;</span>F4<span class="p">&gt;</span> <span class="p">&lt;</span>Plug<span class="p">&gt;(</span>xmpfilter<span class="p">-</span>mark<span class="p">)</span>
+<span class="k">autocmd</span> <span class="nb">FileType</span> <span class="k">ruby</span> xmap <span class="p">&lt;</span>buffer<span class="p">&gt;</span> <span class="p">&lt;</span>F4<span class="p">&gt;</span> <span class="p">&lt;</span>Plug<span class="p">&gt;(</span>xmpfilter<span class="p">-</span>mark<span class="p">)</span>
+<span class="k">autocmd</span> <span class="nb">FileType</span> <span class="k">ruby</span> imap <span class="p">&lt;</span>buffer<span class="p">&gt;</span> <span class="p">&lt;</span>F4<span class="p">&gt;</span> <span class="p">&lt;</span>Plug<span class="p">&gt;(</span>xmpfilter<span class="p">-</span>mark<span class="p">)</span>
+
+<span class="k">autocmd</span> <span class="nb">FileType</span> <span class="k">ruby</span> nmap <span class="p">&lt;</span>buffer<span class="p">&gt;</span> <span class="p">&lt;</span>F5<span class="p">&gt;</span> <span class="p">&lt;</span>Plug<span class="p">&gt;(</span>xmpfilter<span class="p">-</span>run<span class="p">)</span>
+<span class="k">autocmd</span> <span class="nb">FileType</span> <span class="k">ruby</span> xmap <span class="p">&lt;</span>buffer<span class="p">&gt;</span> <span class="p">&lt;</span>F5<span class="p">&gt;</span> <span class="p">&lt;</span>Plug<span class="p">&gt;(</span>xmpfilter<span class="p">-</span>run<span class="p">)</span>
+<span class="k">autocmd</span> <span class="nb">FileType</span> <span class="k">ruby</span> imap <span class="p">&lt;</span>buffer<span class="p">&gt;</span> <span class="p">&lt;</span>F5<span class="p">&gt;</span> <span class="p">&lt;</span>Plug<span class="p">&gt;(</span>xmpfilter<span class="p">-</span>run<span class="p">)</span>
+</code></pre></div>
+<p>Now you too can evaluate Ruby code on the fly in Vim. And I can get back to
+watching more of Avdi.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/12/21/clojure-thoughts/">
+        Three Ways with Clojure
+      </a>
+    </h1>
+
+    <span class="post-date">21 Dec 2014</span>
+
+    <p>I&#39;ve been working with <a href="http://clojure.org/">Clojure</a> in the last few days, both looking at the
+<a href="http://clojurekoans.com/">Clojure Koans</a> and another resource I&#39;ve discovered <a href="http://www.4clojure.com/">4clojure.com</a>. I&#39;d like to
+share a nice problem I saw there, and some of the solutions to it which I think
+expose some of the things I&#39;m beginning to appreciate about the language.</p>
+
+<h3>The Problem</h3>
+
+<p>as stated on <a href="http://www.4clojure.com/problem/21#prob-title">4clojure</a>.</p>
+
+<blockquote>
+<p>Write a function which returns the Nth element from a sequence.
+(Without using <code>nth</code>)</p>
+</blockquote>
+
+<p><code>nth</code> is the obvious answer to the problem, as it returns the nth element in
+a sequence:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nb">= </span><span class="mi">2</span> <span class="p">(</span><span class="nb">nth </span><span class="mi">1</span> <span class="o">&#39;</span><span class="p">(</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">)))</span>
+</code></pre></div>
+<p>We need to get to a function that will do the same, something that will fit
+in the blank space below:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nb">= </span><span class="p">(</span><span class="nf">___</span> <span class="o">&#39;</span><span class="p">(</span><span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span><span class="p">)</span> <span class="mi">2</span><span class="p">)</span> <span class="mi">6</span><span class="p">)</span>
+</code></pre></div>
+<h3>Solution 1: recurring</h3>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">fn </span><span class="nv">my_nth</span> <span class="p">[</span><span class="nv">seqn</span> <span class="nv">n</span><span class="p">]</span> <span class="p">(</span><span class="nf">if</span>
+    <span class="p">(</span><span class="nb">zero? </span><span class="nv">n</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">first </span><span class="nv">seqn</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">my-nth</span> <span class="p">(</span><span class="nb">rest </span><span class="nv">seqn</span><span class="p">)</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">n</span><span class="p">))))</span>
+</code></pre></div>
+<p>Here we use recurrance, setting the breaking point as the iteration where <code>n</code> is
+zero using <code>if</code>, at which point the function returns the <code>first</code> value of the
+sequence. If it&#39;s not, we fire the function again, but this time chopping off
+the first member of the sequence (<code>(rest seqn)</code> returns the rest) and
+<code>dec</code>rementing the value of <code>n</code> by one. We walk through the sequence, losing
+items from the front of the sequence <code>n</code> times, until we get to the index.</p>
+
+<p>We&#39;ve named the function <code>my_nth</code>, but we could easily anonymize it:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">seqn</span> <span class="nv">n</span><span class="p">]</span> <span class="p">(</span><span class="nf">if</span>
+    <span class="p">(</span><span class="nb">zero? </span><span class="nv">n</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">first </span><span class="nv">seqn</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">recur</span> <span class="p">(</span><span class="nb">rest </span><span class="nv">seqn</span><span class="p">)</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">n</span><span class="p">))))</span>
+</code></pre></div>
+<p><code>recur</code> is neat - it executes the expressions that follow it, then rebinds the
+values hey produce to the bindings of the recursion point, in this case the
+<code>fn</code> method. We then get moved back to that method with the new values, causing
+the recusion. Very cool.</p>
+
+<p>Usually recursion is a neat way of writing a short function; here it&#39;s pretty
+longwinded. We can get smaller...</p>
+
+<h3>Solution 2: taking</h3>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">seqn</span> <span class="nv">n</span><span class="p">]</span> <span class="p">(</span><span class="nb">last </span><span class="p">(</span><span class="nb">take </span><span class="p">(</span><span class="nb">inc </span><span class="nv">n</span><span class="p">)</span> <span class="nv">seqn</span><span class="p">)))</span>
+</code></pre></div>
+<p>Here we <code>take</code> the first one-more-than-n (<code>inc</code> increments its argument) items
+from the sequence, and then take the <code>last</code> one from the end of that new list-
+which will be the nth element.</p>
+
+<p><code>take</code> is used in many of the examples I&#39;ve seen as a way of accessing
+a sequence which may be infinite like the Fibonacci series - see some of the
+examples over at
+<a href="https://en.wikibooks.org/wiki/Clojure_Programming/Examples/Lazy_Fibonacci">Wikibooks</a>.</p>
+
+<p>We can squeeze more succinctness in there using some alternative syntax:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="o">#</span><span class="p">(</span><span class="nb">last </span><span class="p">(</span><span class="nb">take </span><span class="p">(</span><span class="nb">inc </span><span class="nv">%2</span><span class="p">)</span> <span class="nv">%1</span><span class="p">))</span>
+</code></pre></div>
+<p>But if you want to be really succinct:</p>
+
+<h3>Solution 3: ripping off Java</h3>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="nv">.get</span>
+</code></pre></div>
+<p>Clojure gives you access to Java methods and fields through the use of the dot
+(<code>.</code>) operator, which taks the form <code>(.instanceMember instance arguments*)</code>.
+Here we&#39;re using the <code>get()</code> method from the Java <a href="http://docs.oracle.com/javase/tutorial/collections/interfaces/list.html">Lists
+interface</a>,
+which we get to use on these instances as they are, well, Java lists.  which
+takes one argument - and luckily for us its the index! We&#39;re calling <code>get(6)</code>
+on the list, which gives us the answer we want.</p>
+
+<p>This is pretty close to cheating, but it goes to show how Clojure&#39;s access to
+Java gives us a whole other language of libraries and methods to play with.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/12/14/book-review-compsci-basics-ruby/">
+        Book Review: Computer Science Programming Basics in Ruby
+      </a>
+    </h1>
+
+    <span class="post-date">14 Dec 2014</span>
+
+    <p>I recently finished reading <a href="http://shop.oreilly.com/product/0636920028192.do">Computer Science Programming Basics in Ruby</a> by
+Ophir Frieder, Gideon Frieder and David Grossman. I was looking for something
+that would extend my knowledge of computer science fundamentals - the title
+appealed a I&#39;ve done the majority of my coding up to this point in Ruby, so
+I was hoping the familiar language would allow me to concentrate more on the
+computer science theory.</p>
+
+<p>I was ultimately disappointed - the book isn&#39;t so much a computer science primer
+as a programming primer. The concepts being taught in this book tend to be basic
+ones - control flow, simple data structures, how a computer works. It&#39;s pitched
+at an entry level, and for that I&#39;m sure it&#39;s ideal, but it&#39;s not quite what
+I was after.</p>
+
+<p>Idiomatic Ruby is avoided in the book in favour of using patterns that are more
+generic to all programming languages. This is a good idea as it introduces core
+programming concepts in a non language specific way, but the lack of common Ruby
+methods like <code>each</code> might be concerning to some. The book teaches programming
+basics in Ruby, but I don&#39;t think it teaches a great deal of Ruby while doing
+so.</p>
+
+<p>That said I learned a great deal in Chapter 7, Sorting and Searching. The
+comparison of different search and sort algorithms make a good introduction to
+algorithms in general and made me think a bit harder about the magic that goes
+on under the hood of Ruby methods and operators that I take for granted. I&#39;m
+going to try and learn more about algorithms in the next few weeks (see my <a href="/2014/12/08/exposing-myself/">last
+post</a> for the rest of my hit list).</p>
+
+<p>Maybe borrow this book from the library and give it a skim read if you&#39;re
+already familiar with Ruby, because I&#39;m sure you&#39;ll find some useful stuff there. If
+you&#39;re interested in learning Ruby from the ground up you should probably pair
+this book with something like <em><a href="http://www.manning.com/black2/">The Well Grounded Rubyist</a></em> in order to see why
+Ruby&#39;s so precious and shiny. Otherwise it&#39;s a well structured, detailed and
+approachable introductory text, if maybe a touch academic. Just not for me right
+now.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/12/08/exposing-myself/">
+        Exposing my ignorance
+      </a>
+    </h1>
+
+    <span class="post-date">08 Dec 2014</span>
+
+    <p>I am currently reading (on impeccable advice), <em><a href="http://shop.oreilly.com/product/9780596518387.do">Apprenticeship Patterns</a></em> by
+<a href="https://twitter.com/davehoover">Dave Hoover</a> and <a href="https://twitter.com/ade_oshineye">Adewale Oshineye</a>. The book is written as a series of
+&#39;patterns&#39;, a method of analysing and solving problems which is derived from
+a book I&#39;ve always meant to read but haven&#39;t, <em><a href="https://en.wikipedia.org/wiki/A_Pattern_Language">A Pattern Language</a></em> by
+Christopher Alexander, Sara Ishikawa and Murray Silverstein. There a pattern is
+a solution to an architectural design pattern, a &quot;best guess as to what
+arrangement of the physical environment will work to solve the problem
+presented.&quot; Here the patterns are &#39;best guesses&#39; as to how to solve the problems
+of becoming a better developer.</p>
+
+<p>Two patterns I&#39;ve been looking at in the last few days are &quot;Expose Your
+Ignorance&quot; and &quot;Confront Your Ignorance&quot;. The first pattern declares that, as
+an apprentice you don&#39;t know how to do a lot of things that you are going to
+have to do. A first instinct (OK, <em>my</em> first instinct) is to hide that
+ignorance, nod blithely as the person describes the thing you don&#39;t understand
+and then do a lot of reading and experimenting when you&#39;re back home. &#39;Fake it
+till you make it&#39;.</p>
+
+<p>This can work, but it&#39;s incredibly inefficient. Other people know already, most
+importantly the people who are asking you complete a task. Just say that you
+don&#39;t know - that way you open up the opportunity for them to help you where you
+struggle. Take route A, the shortest path between two points, and ask questions.
+This quote sums it up:</p>
+
+<blockquote>
+<p>“Tell people the truth. Let them know that you’re starting to understand what
+they want and you’re in the process of learning how to give it to them. If you
+reassure them, reassure them with your ability to learn, not by pretending to
+know something you don’t. In this way, your reputation will be built upon your
+learning ability rather than what you already know.”</p>
+</blockquote>
+
+<p>My quality as a programmer is not defined by what I know, but rather by what
+I can know. But the hardest person to expose that ignorance to is always yoursel</p>
+
+<p>The corollary to &quot;Exposing Your Ignorance&quot; is &quot;Confronting Your Ignorance&quot;. An
+old colleague of mine would always say that he&#39;d forgive anything, other than
+&#39;willful ignorance&#39;. There&#39;s little point in declaring your ignorance if you&#39;re
+not actively addressing those gaps in your knowledge. Asking questions is
+a start, but oher techniques like pair programming, building example projects,
+and good old fashioned reading, are there too.</p>
+
+<p>Each pattern has a set of actions associated with it. &quot;Exposing Your Ignorance&quot;
+asks that you write down five things that you don&#39;t understand about your work
+and put it where others can see it:</p>
+
+<ol>
+<li>Can I build a toy app in Java?</li>
+<li>How do I use mocks in Java (London style TDD)?</li>
+<li>How do I implement a &#39;hexagonal&#39; design, and what does that even mean?</li>
+<li>What are generics (in Java and elsewhere)?</li>
+<li>What is the best way for me to structure AngularJS and other JavaScript projects?</li>
+<li>What is functional programming? I mean, <em>really</em>?</li>
+<li>What is an algorithm and how do I measure its efficiency?</li>
+<li>Refactoring. I (think I) know what it means but can I learn some patterns to do it better?</li>
+</ol>
+
+<p>Not exactly five, but I could probably write fifty at the moment. There are lots
+of other things I don&#39;t know (list as long as my arm). But, you&#39;ve got to start
+somewhere.</p>
+
+<p>The action for &quot;Confronting Your Ignorance&quot; is to pick one of the things on your
+list and, well, learn it. Nice and simple - show your ignorance and own your
+ignorance, and fix your ignorance. That&#39;s a powerful tool.</p>
+
+<p>I&#39;m enjoying the book. I&#39;ll hopefully provide a fuller review at a later date.
+And also provide an update of which of my ignorances I&#39;ve confronted.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/11/22/koans/">
+        Programming Language Koans
+      </a>
+    </h1>
+
+    <span class="post-date">22 Nov 2014</span>
+
+    <p>I finished the <a href="https://github.com/neo/ruby_koans">Ruby Koans</a> today. I&#39;d been
+pretty close to the end before I started study at Makers Academy, but it&#39;s good
+to have them done. I noticed I flew through the last few regardng
+metaprogramming - I&#39;ve been taught well.</p>
+
+<p>Koans are an interesting tool to learn a language. Instead of teaching a fact,
+they instead encourage solving a problem. The problems are koans in the sense
+that the solution to each one reveals a new aspect of Ruby to the student. This
+starts with simple operators and ends with metaprogramming techniques. The
+solution tends to be of the &#39;fill in the blank&#39; form, although sometimes they
+require editing a class.</p>
+
+<p>What I admire about this technique is the following:</p>
+
+<ul>
+<li><p>Each problem is, in effect, a test. TDD is baked in from the beginning, even
+if you don&#39;t happen to know what testing is. Think of it as test driven
+learning.</p></li>
+<li><p>The lessons are inseperable from the questions. Simply by answering the
+question you are learning. There is no text with a list of questions at the
+end to ensure understanding.</p></li>
+<li><p>Hands on keyboard. You&#39;re reading, and writing, code in an active way. There
+is no passive learning with writing koans.</p></li>
+</ul>
+
+<p>If you&#39;ve not tried out a set of koans, here&#39;s <del>a short</del> <ins>an incresingly
+long</ins> list to try out:</p>
+
+<ul>
+<li><a href="https://github.com/marcinbunsch/bash_koans">Bash</a></li>
+<li><a href="https://github.com/torbjoernk/CppKoans">C++</a></li>
+<li><a href="https://github.com/functional-koans/clojure-koans">Clojure</a></li>
+<li><a href="https://github.com/liammclennan/coffeescript-koans">CoffeeScript</a></li>
+<li><a href="https://github.com/google/lisp-koans">Common Lisp</a></li>
+<li><a href="https://github.com/butlermatt/dart_koans">Dart</a></li>
+<li><a href="https://github.com/CoryFoy/DotNetKoans">DotNet</a></li>
+<li><a href="https://github.com/dojo-toulouse/elixir-koans">Elixir</a></li>
+<li><a href="https://github.com/patrickgombert/erlang-koans">Erlang</a></li>
+<li><a href="https://github.com/ChrisMarinos/FSharpKoans">F#</a></li>
+<li><a href="https://github.com/cdarwin/go-koans">Go</a></li>
+<li><a href="https://github.com/cjudd/groovy_koans">Groovy</a></li>
+<li><a href="https://github.com/HaskVan/HaskellKoans">Haskell</a></li>
+<li><a href="https://github.com/liammclennan/JavaScript-Koans">JavaScript</a></li>
+<li><a href="https://github.com/matyb/java-koans">Java</a></li>
+<li><a href="https://github.com/kikito/lua_missions">Lua</a></li>
+<li><a href="https://github.com/chicagoruby/MongoDB_Koans">MongoDB</a></li>
+<li><a href="https://github.com/forcedotcom/PerlKoans">Perl</a></li>
+<li><a href="https://github.com/neo/ruby_koans">Ruby</a></li>
+<li><a href="https://github.com/mankyKitty/rust-koans">Rust</a></li>
+<li><a href="http://scalakoans.webfactional.com/">Scala</a></li>
+<li><a href="https://www.hpi.uni-potsdam.de/hirschfeld/trac/SqueakCommunityProjects/wiki/smalltalk_koans">Squeak/Pharo Smalltalk</a></li>
+<li><a href="https://www.hpi.uni-potsdam.de/hirschfeld/trac/SqueakCommunityProjects/wiki/smalltalk_koans">GNU Smalltalk</a></li>
+</ul>
+
+<p>I&#39;ve started the <a href="https://github.com/functional-koans/clojure-koans">Clojure Koans</a>.
+Where the Ruby Koans were verbose, these are terse.  I like terse. Very often
+I felt like I was being told what to write as the answer to the Ruby Koans. That
+was right for Ruby, but not for Clojure.</p>
+
+<p>So - go learn something new today!</p>
+
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <a class="pagination-item older" href="/page3">Older</a>
+  
+  
+    
+      <a class="pagination-item newer" href="/">Newer</a>
+    
+  
+</div>
+    </div>
+
+  </body>
+</html>

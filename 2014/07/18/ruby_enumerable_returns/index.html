@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Many Enumerable Returns &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Many Enumerable Returns</h1>
+  <span class="post-date">18 Jul 2014</span>
+  <p>As threatened then, here&#39;s the followup to my <a href="/2014/07/12/destructuring/">last post</a> on the
+<code>#Enumerables</code> section from <a href="https://rubymonk.com/">Ruby Monk</a>, how I felt like a bit of an
+idiot for a few hours, and what I learned from that.</p>
+
+<p>tl;dr - enumerable blocks aren&#39;t magic; <code>yield</code> is magic.</p>
+
+<p>This question is a little further along from the last, and was framed so:</p>
+
+<blockquote>
+<p>Try implementing a method called occurrences that accepts a string argument and
+uses inject to build a Hash. The keys of this hash should be unique words from
+that string. The value of those keys should be the number of times this word
+appears in that string.</p>
+</blockquote>
+
+<p>So far so, so good. So I wrote this:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+  <span class="n">str</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w+/</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="n">hashy</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span>
+    <span class="n">hashy</span><span class="o">[</span><span class="n">i</span><span class="o">.</span><span class="n">downcase</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Which spat out:</p>
+
+<blockquote>
+<p><code>TypeError
+can&#39;t convert String into Integer</code></p>
+</blockquote>
+
+<p>And left me confused for a good few minutes. OK, getting on for a quarter of an
+hour. What was going on? - what I&#39;d written was very similar to the example
+above:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">42</span><span class="o">].</span><span class="n">inject</span><span class="p">({})</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="p">)</span> <span class="p">}</span></code></pre></div>
+
+<p>So I caved and looked at the answer:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+    <span class="n">str</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/\w+/</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="n">build</span><span class="p">,</span> <span class="n">word</span><span class="o">|</span>
+        <span class="n">build</span><span class="o">[</span><span class="n">word</span><span class="o">.</span><span class="n">downcase</span><span class="o">]</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="n">build</span>
+    <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Which left me none the wiser. Why was the block re-iterating the accumulator
+function at the end? To test this I played around with <code>p</code>-ing the lines of the
+block... and discovered something interesting. Namely,</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">a</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="p">)</span> <span class="c1"># =&gt; a</span>
+
+<span class="c1"># But...</span>
+
+<span class="n">build</span><span class="o">[</span><span class="n">word</span><span class="o">.</span><span class="n">downcase</span><span class="o">]</span> <span class="o">+=</span><span class="mi">1</span> <span class="c1"># =&gt; build[word.downcase], the new value of that key</span></code></pre></div>
+
+<p>The block <em>needs to return the accumulator</em> - the first example is just lucky
+that it does so already!</p>
+
+<p>The only reason the accumulator in an <code>Enumerable#inject</code> accumulates is that
+<em>it&#39;s returned from the block on each iteration</em>. In other words, somewhere in
+the definition of <code>#inject</code> for each class that can be made enumerable, the
+method <code>yield</code>s to the block, and then keeps the value returned to be passed in
+again as the new accumulator argument.</p>
+
+<p>I&#39;d previously thought of <code>#inject</code> as working by <em>magic</em>, whereas in fact it
+was working by a method I could probably write myself given enough time.
+Something like this...</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bob</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="o">]</span>
+
+<span class="k">def</span> <span class="nc">bob</span><span class="o">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="n">accumulator</span> <span class="o">=</span> <span class="n">default</span> <span class="o">||</span> <span class="nb">self</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+  <span class="k">if</span> <span class="n">default</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">element</span><span class="o">|</span>
+      <span class="n">accumulator</span> <span class="o">=</span> <span class="k">yield</span><span class="p">(</span><span class="n">accumulator</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">else</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">element</span><span class="o">|</span>
+      <span class="n">accumulator</span> <span class="o">=</span> <span class="k">yield</span><span class="p">(</span><span class="n">accumulator</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+  <span class="nb">puts</span> <span class="s2">&quot;all adds up to: &quot;</span>   <span class="c1"># just to prove it&#39;s this method being</span>
+                            <span class="c1"># called, not the superclasses...</span>
+  <span class="nb">p</span> <span class="n">accumulator</span>
+<span class="k">end</span></code></pre></div>
+
+<p>Which gives us such fun as:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">()</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span> <span class="o">+=</span> <span class="n">e</span><span class="p">}</span>
+<span class="c1"># =&gt; all adds up to: 21</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span> <span class="o">+=</span> <span class="n">e</span><span class="p">}</span>
+<span class="c1"># =&gt; all adds up to: 31</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="p">}</span>
+<span class="c1"># =&gt; all adds up to: [1, 4, 9, 16, 25, 36]</span>
+<span class="n">bob</span><span class="o">.</span><span class="n">inject</span><span class="p">({})</span> <span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">e</span><span class="o">|</span> <span class="n">a</span><span class="o">[</span><span class="n">e</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="o">*</span><span class="n">e</span><span class="p">;</span> <span class="n">a</span><span class="p">}</span>
+<span class="c1"># =&gt; {5=&gt;&quot;xxxxx&quot;, 6=&gt;&quot;xxxxxx&quot;, 1=&gt;&quot;x&quot;, 2=&gt;&quot;xx&quot;, 3=&gt;&quot;xxx&quot;, 4=&gt;&quot;xxxx&quot;}</span></code></pre></div>
+
+<p>I relied on <code>#each</code> here, but we could easily write an <code>each</code> method using
+a <code>for... in...</code> loop or similar. The genius is in <code>yield</code>, which is the <em>real
+magic</em> that&#39;s going on here.</p>
+
+<p><a href="https://rubymonk.com/">Ruby Monk</a> has more about the <a href="http://rubymonk.com/learning/books/1/chapters/34-lambdas-and-blocks-in-ruby/lessons/78-blocks-in-ruby">magic of yield</a>, and why it&#39;s
+weird in a language that professes that everything is an object. Like a lot in
+Ruby, I discovered a small thing didn&#39;t work, patiently played with it until
+I found out why, and then &#39;worked&#39; that small new piece of knowledge to give me
+greater insight into what was going on. I&#39;m finding this to be the most
+satisfying method to learn by, both because it makes me feel like I&#39;m learning
+to a deeper degree than I would by just reading the answers out of a book, and
+in addition, when the books do cover the subject, I can better apply what&#39;s
+written there to what I&#39;ve seen in action.</p>
+
+<h3><em>postscipt</em> - 27/714</h3>
+
+<p>Of course, David Black covers the same ground, but better (gets <code>each</code> off the
+ground using a <code>for</code> loop), in chapter 6 of <a href="http://www.manning.com/black2/"><em>The Well Grounded Rubyist</em></a>. Love that
+book.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

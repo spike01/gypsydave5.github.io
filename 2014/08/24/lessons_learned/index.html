@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Lessons Learned &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Lessons Learned</h1>
+  <span class="post-date">24 Aug 2014</span>
+  <p>Things I&#39;ve learned so far from my teachers:</p>
+
+<h3><a href="https://twitter.com/Stephen_lloyd">Stephen</a> - Succinct Semantics</h3>
+
+<p>I felt a little smug about my code when Steve sat next to me to see how I was
+doing. I was seeing if there were any broken bikes in an array, something like</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bikes</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span><span class="o">|</span><span class="n">bike</span><span class="o">|</span> <span class="n">bike</span><span class="o">.</span><span class="n">broken?</span><span class="p">}</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</code></pre></div>
+<p>He took a quick look and pointed out that this was a little on the long side.
+Does Ruby have an <code>any?</code> method for <code>Array</code>s? Sure enough, there in <code>Enumerable</code></p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bikes</span><span class="o">.</span><span class="n">any?</span> <span class="p">{</span><span class="o">|</span><span class="n">bike</span><span class="o">|</span> <span class="n">bike</span><span class="o">.</span><span class="n">broken?</span><span class="p">}</span>
+</code></pre></div>
+<p>Better. I would have been happy. But Steve then says, try passing a the symbol
+for <code>broken?</code> as a proc - something I&#39;d seen and not used.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bikes</span><span class="o">.</span><span class="n">any?</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:broken?</span><span class="p">)</span>
+</code></pre></div>
+<p>See how that&#39;s better? It says exactly what it does? Yes, I did. And I&#39;d learned
+that you don&#39;t have to sacrifice succinctness to semantics and vice versa. Ruby
+has enough well-named methods and techniques to create a short statement that
+someone who didn&#39;t know Ruby would still understand. Lesson learned.</p>
+
+<h3><a href="https://twitter.com/liviu_23">Mihai</a> - Delete Your Code</h3>
+
+<p>I asked Mihai for some help changing my tests for the Boris Bikes project. I was
+trying to change the RSpec tests I&#39;d written from <a href="http://programmers.stackexchange.com/questions/123627/what-are-the-london-and-chicago-schools-of-tdd">Chicago to London
+style</a> having just been shown how to do doubles.</p>
+
+<p>Start again, Mihai said. Don&#39;t be precious or treasure what you&#39;ve written
+- just get rid of it and start again. You&#39;ll learn more that way.</p>
+
+<p>Since then I&#39;ve taken immense pleasure in wiping entire projects out. And
+learned more by doing that. Lesson learned.</p>
+
+<h3><a href="https://twitter.com/ecomba">Enrique</a> - Cooking without ever having have Eaten</h3>
+
+<p>Late in the day I asked Enrique about program design. I was worried, really
+worried, that I didn&#39;t know the right way to proceed with writing a program.
+He&#39;d just introduced the idea of design patterns that day, so I asked him to
+recommend a book, or a checklist, or a mantra - the best way to learn some
+patterns.</p>
+
+<p>Even as I spoke, Enrique started moving him hands, miming typing in front of me.
+Remember what I said earlier, he said, about coding being entirely artificial.
+It&#39;s not like cooking where you know what food is and what it tastes like. It&#39;s
+like cooking when you&#39;ve never eaten food, have no idea what good or bad food
+tastes like. The only way you&#39;ll learn is by writing code, a lot of code. Then
+your instincts, your taste and intuition, will improve.</p>
+
+<p>It was only later that I connected this advice up with <a href="http://en.wikipedia.org/wiki/Henri_Bergson#Creativity">Bergson&#39;s ideas about
+creativity, specifically the swimming example</a>. You wouldn&#39;t think
+a person could swim if you only ever saw them walk, the argument goes. For
+swimming to be intellectually comprehendable, you&#39;ve got to throw yourself in
+the water first. You can&#39;t theorize about things you haven&#39;t done - intuition
+must take the lead, intelligence is a not a speculative faculty, but a practical one.</p>
+
+<p>Mind blown, I staggered home, ignored <em>The RSpec Book</em> and wrote more code.
+Lesson learned.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

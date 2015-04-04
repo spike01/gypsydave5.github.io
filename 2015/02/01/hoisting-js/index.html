@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Hoisting in JavaScript &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Hoisting in JavaScript</h1>
+  <span class="post-date">01 Feb 2015</span>
+  <p>Working at <a href="http://www.mergermarket.com/info/">Mergermarket</a> is fun. Not only am I getting to grips with a new
+language, <a href="http://groovy.codehaus.org/">Groovy</a>, in a nice, agile environment, on a project that&#39;s
+challenging but to which I can make some small and increasing contributions to. Not
+only that, but I&#39;m also working with some damn clever and patient people who
+are happy to explain things to me as we go along.</p>
+
+<p>So my next thsee posts will be about some of what I&#39;ve learned about JavaScript
+in the last month with Mat, Mike, Danielle, Nick and many others.</p>
+
+<h3>Hoisting</h3>
+
+<p>At the top of my list of &quot;words I&#39;d heard associated with JS but didn&#39;t have
+the foggiest&quot;, <em>hoisting</em> or, more transparently, variable hoisting. Behold the
+following:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">printThis</span><span class="p">(</span><span class="nx">showLog</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">showLog</span> <span class="o">===</span> <span class="kc">true</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">logMessage</span> <span class="o">=</span> <span class="s1">&#39;MESSAGE!&#39;</span><span class="p">;</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Which you may be inclined to think would return two outputs to the console when
+called with <code>printThis(true)</code>, one of <code>MESSAGE!</code> and then the ubiquitous JS
+<code>undefined</code>. Because <code>logMessage</code> isn&#39;t defined at the second <code>console.log()</code>.</p>
+
+<p>Does it?</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">MESSAGE!
+MESSAGE!
+</code></pre></div>
+<p>Because the interpreter looks at the code and does this to it:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">a</span><span class="p">(</span><span class="nx">showLog</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">logMessage</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="nx">showLog</span> <span class="o">===</span> <span class="kc">true</span><span class="p">){</span>
+        <span class="nx">logMessage</span> <span class="o">=</span> <span class="s1">&#39;MESSAGE!&#39;</span><span class="p">;</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">logMessage</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The variable is &#39;hoisted&#39; out of its declaration in the block and created at the
+top of the function. The assignment still takes place in the same place, but
+because the scope of <code>logMessage</code> is the entire function, the variable is still
+available at the last <code>console.log</code>. This is because (motto alert) <strong>JS
+has function-level scope, not block-level scope</strong>. The interpreter just ignores
+those little <code>{</code> and <code>}</code> unless they&#39;re backed up with a function declaration.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Three Ways with Clojure &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Three Ways with Clojure</h1>
+  <span class="post-date">21 Dec 2014</span>
+  <p>I&#39;ve been working with <a href="http://clojure.org/">Clojure</a> in the last few days, both looking at the
+<a href="http://clojurekoans.com/">Clojure Koans</a> and another resource I&#39;ve discovered <a href="http://www.4clojure.com/">4clojure.com</a>. I&#39;d like to
+share a nice problem I saw there, and some of the solutions to it which I think
+expose some of the things I&#39;m beginning to appreciate about the language.</p>
+
+<h3>The Problem</h3>
+
+<p>as stated on <a href="http://www.4clojure.com/problem/21#prob-title">4clojure</a>.</p>
+
+<blockquote>
+<p>Write a function which returns the Nth element from a sequence.
+(Without using <code>nth</code>)</p>
+</blockquote>
+
+<p><code>nth</code> is the obvious answer to the problem, as it returns the nth element in
+a sequence:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nb">= </span><span class="mi">2</span> <span class="p">(</span><span class="nb">nth </span><span class="mi">1</span> <span class="o">&#39;</span><span class="p">(</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">)))</span>
+</code></pre></div>
+<p>We need to get to a function that will do the same, something that will fit
+in the blank space below:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nb">= </span><span class="p">(</span><span class="nf">___</span> <span class="o">&#39;</span><span class="p">(</span><span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span><span class="p">)</span> <span class="mi">2</span><span class="p">)</span> <span class="mi">6</span><span class="p">)</span>
+</code></pre></div>
+<h3>Solution 1: recurring</h3>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">fn </span><span class="nv">my_nth</span> <span class="p">[</span><span class="nv">seqn</span> <span class="nv">n</span><span class="p">]</span> <span class="p">(</span><span class="nf">if</span>
+    <span class="p">(</span><span class="nb">zero? </span><span class="nv">n</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">first </span><span class="nv">seqn</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">my-nth</span> <span class="p">(</span><span class="nb">rest </span><span class="nv">seqn</span><span class="p">)</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">n</span><span class="p">))))</span>
+</code></pre></div>
+<p>Here we use recurrance, setting the breaking point as the iteration where <code>n</code> is
+zero using <code>if</code>, at which point the function returns the <code>first</code> value of the
+sequence. If it&#39;s not, we fire the function again, but this time chopping off
+the first member of the sequence (<code>(rest seqn)</code> returns the rest) and
+<code>dec</code>rementing the value of <code>n</code> by one. We walk through the sequence, losing
+items from the front of the sequence <code>n</code> times, until we get to the index.</p>
+
+<p>We&#39;ve named the function <code>my_nth</code>, but we could easily anonymize it:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">seqn</span> <span class="nv">n</span><span class="p">]</span> <span class="p">(</span><span class="nf">if</span>
+    <span class="p">(</span><span class="nb">zero? </span><span class="nv">n</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">first </span><span class="nv">seqn</span><span class="p">)</span>
+    <span class="p">(</span><span class="nf">recur</span> <span class="p">(</span><span class="nb">rest </span><span class="nv">seqn</span><span class="p">)</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">n</span><span class="p">))))</span>
+</code></pre></div>
+<p><code>recur</code> is neat - it executes the expressions that follow it, then rebinds the
+values hey produce to the bindings of the recursion point, in this case the
+<code>fn</code> method. We then get moved back to that method with the new values, causing
+the recusion. Very cool.</p>
+
+<p>Usually recursion is a neat way of writing a short function; here it&#39;s pretty
+longwinded. We can get smaller...</p>
+
+<h3>Solution 2: taking</h3>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">seqn</span> <span class="nv">n</span><span class="p">]</span> <span class="p">(</span><span class="nb">last </span><span class="p">(</span><span class="nb">take </span><span class="p">(</span><span class="nb">inc </span><span class="nv">n</span><span class="p">)</span> <span class="nv">seqn</span><span class="p">)))</span>
+</code></pre></div>
+<p>Here we <code>take</code> the first one-more-than-n (<code>inc</code> increments its argument) items
+from the sequence, and then take the <code>last</code> one from the end of that new list-
+which will be the nth element.</p>
+
+<p><code>take</code> is used in many of the examples I&#39;ve seen as a way of accessing
+a sequence which may be infinite like the Fibonacci series - see some of the
+examples over at
+<a href="https://en.wikibooks.org/wiki/Clojure_Programming/Examples/Lazy_Fibonacci">Wikibooks</a>.</p>
+
+<p>We can squeeze more succinctness in there using some alternative syntax:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="o">#</span><span class="p">(</span><span class="nb">last </span><span class="p">(</span><span class="nb">take </span><span class="p">(</span><span class="nb">inc </span><span class="nv">%2</span><span class="p">)</span> <span class="nv">%1</span><span class="p">))</span>
+</code></pre></div>
+<p>But if you want to be really succinct:</p>
+
+<h3>Solution 3: ripping off Java</h3>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="nv">.get</span>
+</code></pre></div>
+<p>Clojure gives you access to Java methods and fields through the use of the dot
+(<code>.</code>) operator, which taks the form <code>(.instanceMember instance arguments*)</code>.
+Here we&#39;re using the <code>get()</code> method from the Java <a href="http://docs.oracle.com/javase/tutorial/collections/interfaces/list.html">Lists
+interface</a>,
+which we get to use on these instances as they are, well, Java lists.  which
+takes one argument - and luckily for us its the index! We&#39;re calling <code>get(6)</code>
+on the list, which gives us the answer we want.</p>
+
+<p>This is pretty close to cheating, but it goes to show how Clojure&#39;s access to
+Java gives us a whole other language of libraries and methods to play with.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

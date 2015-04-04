@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      (not quite) Currying in JavaScript &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">(not quite) Currying in JavaScript</h1>
+  <span class="post-date">19 Feb 2015</span>
+  <p>Currying, yet another <em>I&#39;ve heard the cool kids saying that</em> word. Acually,
+having done some reading, it turns out the cool kids may be misusing it, but
+we&#39;ll get to that part later. Let&#39;s just spend a minute looking at the wonder of
+<code>.bind()</code>.</p>
+
+<p>Here&#39;s a function:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">addition</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+<span class="p">}</span>
+
+<span class="nx">addition</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">//=&gt; 3</span>
+</code></pre></div>
+<p>Let&#39;s say we always wanted to be adding twenty-two - we could make ourselves
+a shiny new function, or we could build on the way <code>addition</code> works using
+<code>.bind()</code></p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">addTwentyTwo</span> <span class="o">=</span> <span class="nx">addition</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+<span class="nx">addTwentyTwo</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">//=&gt; 23</span>
+</code></pre></div>
+<p><code>bind()</code>, as you&#39;ll see in the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MDN docs</a>, is a method you can call on a function in
+JavaScript. It creates a new function based on the old one, with the <code>this</code>
+keyword of the new function set to the first argument to <code>bind()</code>, and other
+arguments given being set to the arguments of the original function. Confusing,
+right? Well, it&#39;s probably best to ignore the first arpument, the <code>this</code>
+reassignment for now, unless there&#39;s a pressing need to change it, and focus on
+the rest. Here, let&#39;s do it again:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">twentyFive</span> <span class="o">=</span> <span class="nx">addTwentyTwo</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nx">twentyFive</span><span class="p">()</span> <span class="c1">//=&gt; 25</span>
+</code></pre></div>
+<p>When we use <code>.bind()</code> we can change the <em>arity</em> (number of ardguments) of the
+function returned, setting the values of any of all of the arguments in the
+original function:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">twoHundred</span> <span class="o">=</span> <span class="nx">addition</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="nx">twoHundred</span><span class="p">()</span> <span class="c1">//=&gt; 200</span>
+</code></pre></div>
+<p>What bind allows us to do is <em>partial application</em>, fixing values of a function
+and returning one of smaller arity:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">addTheseFourUp</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="o">+</span> <span class="nx">c</span> <span class="o">+</span> <span class="nx">d</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">addTwoAndTheseThreeUp</span> <span class="o">=</span> <span class="nx">addTheseFourUp</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="nx">addTwoAndTheseThreeUp</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="c1">//=&gt; 8</span>
+</code></pre></div>
+<p>This is technically not <em>currying</em>, which <a href="https://en.wikipedia.org/wiki/Currying#Contrast_with_partial_function_application">should only return functions with an
+arity of 1</a>. Currying <code>addTheseFourUp</code> would look something like this:</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">curriedFour</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="o">+</span> <span class="nx">c</span> <span class="o">+</span> <span class="nx">d</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">curriedFour</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="mi">2</span><span class="p">)(</span><span class="mi">3</span><span class="p">)(</span><span class="mi">4</span><span class="p">)</span> <span class="c1">//=&gt; 10</span>
+</code></pre></div>
+<p>Which we could also play around with like this...</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">applyFourTimes</span><span class="p">(</span><span class="nx">fun</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">fun</span><span class="p">(</span><span class="nx">fun</span><span class="p">(</span><span class="nx">fun</span><span class="p">(</span><span class="nx">fun</span><span class="p">(</span><span class="nx">num</span><span class="p">))))</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="kr">double</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">num</span> <span class="o">+</span> <span class="nx">num</span>
+<span class="p">}</span>
+
+<span class="nx">applyFourTimes</span><span class="p">(</span><span class="kr">double</span><span class="p">)(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">//=&gt; 48</span>
+</code></pre></div>
+<h3>Postscript</h3>
+
+<p>Not only is partial function application not currying - but currying should
+probably be called <em>Schönfinkelization</em> after its true originator, <a href="https://en.wikipedia.org/wiki/Moses_Sch%C3%B6nfinkel">Moses
+Schönfinkel</a>, to whom <a href="https://en.wikipedia.org/wiki/Haskell_Curry">Haskell Curry</a> attributed the concept. That said, W. V.
+O. Quine points out that the idea had already been hit upon by <a href="https://en.wikipedia.org/wiki/Moses_Sch%C3%B6nfinkel#Work">Frege</a>.</p>
+
+<p>From JavaScript to philosophy in but a few skips...</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/14/javascript-arrays/">
+            Arrays in JavaScript
+            <small>14 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

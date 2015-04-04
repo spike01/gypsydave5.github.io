@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Data Mapper Woes &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Data Mapper Woes</h1>
+  <span class="post-date">20 Sep 2014</span>
+  <p>I love <a href="http://datamapper.org/">DataMapper</a>, the lightweight Object Relational
+Mapper for Ruby. We&#39;ve been using it with Sinatra. It&#39;s skinny, it&#39;s simple,
+it&#39;s clever, it makes the right tables happen in Postgres and the syntax is
+surprisingly simple. For instance, the email field for a user table:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">property</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">unique</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">required</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">email_address</span>
+</code></pre></div>
+<p>Look! It&#39;s amazing -- not only do we set the property, but we&#39;ve made it
+required and unique, and we&#39;ve validated that it&#39;s an email address. Amazing!</p>
+
+<p>I love it, but like all wonderful DSLs when it&#39;s good it&#39;s very very good, but
+when it&#39;s bad it&#39;s <em>horrid</em>.</p>
+
+<p>In the example I was working on I was creating a user which could be associated
+with many posts - it was a basic Twitter like app. The user had some
+requirements as above - specifically those listed for the email, but also that
+the user name was unique and that the password was more than six characters
+long. So far so incredibly boring.</p>
+
+<p>I set the wheels in motion, I write a feature test in Cucumber to see if as
+a user, when logged in, and I create a new post, then the post count goes up by
+one (I like speaking in Gherkin). Everything looked OK - but the post wasn&#39;t
+saving. And there were no useful error messages.</p>
+
+<p><a href="http://alexpeattie.com/">Alex Peattie</a> is a hero. He&#39;s left Makers now, but
+before he did he hacked through what was going on with my problem. And I mean
+hacked in the manner of destroying briar patches and slaying dragons - my mouth
+dropped in awe as he systematically got to the source of the problem (&quot;So, let&#39;s
+force it to save...  it saves the post fine, but doesn&#39;t update the user...
+hmmm...&quot;), then started dropping <code>puts</code> into the DataMapper source code after
+identifying the problematic lines in the backtrace.</p>
+
+<p>As it turns out, it was the password length that was the problem. As the User
+was being updated with the new post it is being associated with, the password
+requirement (6 letters or more) was kicking in - even when no password was
+being submitted with the update. So the post was fine - just the user didn&#39;t,
+and so prevented the post from saving.</p>
+
+<p>Simple to fix (just tell the user model to only validate password length on
+creation), but difficult to identify. I won&#39;t make that mistake again, but Alex
+remains my hero for sorting that out (and giving a great demonstration
+debugging). <a href="http://alex-farewell-card.herokuapp.com/">We all miss him</a>.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

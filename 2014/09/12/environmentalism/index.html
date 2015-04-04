@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Environmentalism &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Environmentalism</h1>
+  <span class="post-date">12 Sep 2014</span>
+  <p>I&#39;ve never really seen the point of environment variables until today. They&#39;ve
+been slowly introduced into the syllabus at Makers during the bookmark manager
+project. To start with they were a way determine which database to use; whether
+the one for the test suite or the one for playing around on the local server.</p>
+
+<p>Something like</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">env</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RACK_ENV&quot;</span><span class="o">]</span> <span class="o">||</span> <span class="s2">&quot;development&quot;</span> <span class="no">DataMapper</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="ss">:default</span><span class="p">,</span>
+<span class="s2">&quot;postgres://localhost/bookmark_manager_</span><span class="si">#{</span><span class="n">env</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Which is all well and good. Then it comes to getting the app up - let&#39;s say on
+Heroku.</p>
+
+<p>Heroku has PostgreSQL support, so that&#39;s taken care of by adding a plugin on the
+dashboard. Tick. Pushing the application to Heroku is easy enough (as long as
+you haven&#39;t spelled <code>Gemfile</code> in all caps at any point in your Git history. Who
+would do that?). But then you hit the buffers, because the database isn&#39;t where
+you&#39;ve told Sinatra it is.</p>
+
+<p>So where is it? Hiding somewhere over at Amazon apparently. If you run <code>heroku
+config</code> you&#39;ll see a great (OK, tiny) stack of... you guessed it... environment
+variables. The two key ones to look at are <code>DATABASE_URL</code> and
+<code>HEROKU_POSTGRES_PINK_URL</code>. Next to them both is a long URL that lets you know
+that the nice folks at Amazon are taking care of your instance of Postgres on
+the behalf of Heroku.</p>
+
+<p>So we just jam that URL into the DataMapper setup right?</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ruby DataMapper.setup(:default,
+&quot;postgres://whole-mess-of-letters.compute-1.amazonaws:porty_goodness_here&quot;)
+</code></pre></div>
+<p>Wrong. That URL is a magic number, it&#39;s specific to the Heroku server you&#39;re
+pushing to. But what about James? What about Vincent? Maybe they want to have an
+instance of their own. Or what if Heroku go and migrate your database to another
+cloud supplier? Bad times.</p>
+
+<p>Environment variables to the rescue. Look, it&#39;s right there in the config:
+<code>DATABASE_URL</code>. Just jam that sucker into the DataMapper setup. Of course, you
+need to make sure that you&#39;re using it in Heroku, so maybe some sort of <code>if</code>
+statement to make sure you&#39;re using it in the right place. Not pretty, but...</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="sr">/heroku/</span><span class="p">)</span>
+    <span class="no">DataMapper</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="ss">:default</span><span class="p">,</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;DATABASE_URL&quot;</span><span class="o">]</span><span class="p">)</span>
+<span class="k">else</span>
+    <span class="no">DataMapper</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="ss">:default</span><span class="p">,</span> <span class="s2">&quot;postgres://localhost/bookmark_manager_</span><span class="si">#{</span><span class="n">env</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Environment variables. No longer a &#39;nice to have&#39;.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

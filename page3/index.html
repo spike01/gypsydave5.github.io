@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      home &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/11/12/java-java-java/">
+        Java
+      </a>
+    </h1>
+
+    <span class="post-date">12 Nov 2014</span>
+
+    <p>Java. Java is the
+(<a href="http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html">second</a>)
+most popular programming language in the world. Java is over twenty years old.
+Java is everywhere.</p>
+
+<p>Java is giving me a headache.</p>
+
+<p>Based on a job opportunity I started to try and learn Java last week. Flailing
+around for guidance, Enrique told me to install an IDE. <a href="https://www.jetbrains.com/idea/">IntelliJ</a> to be
+precise - mainly to get something to manage my dependencies for me.. That&#39;s
+a whole story in itself, but I hacked around a bit, ran some tutorials, and
+eventually I got a <code>Hello World</code> out into the world. Finally
+I understood why things in Java could be <code>public static void</code>, finally
+I understood the syntax. Squint a little and it just looks like JavaScript. Ish.</p>
+
+<p>Step two: testing. <a href="http://junit.org/">jUnit</a> turned out to be a testing framework for Java
+and should not be confused with <a href="http://en.wikipedia.org/wiki/G-Unit">G-Unit</a>.  This I also got going, but not
+without reservations. Turns out I don&#39;t like IDEs, for some reason they make me
+feel seperated from the code I&#39;m writing.  Also I felt ike I didn&#39;t have the
+time to learn a whole new environment. I use <a href="http://www.vim.org/">Vim</a>, and I use it on the command
+line, and I like it that way.</p>
+
+<p>So I thought I&#39;d try it from the command line. Not my greatest decision. You&#39;ve
+got two choices about how to manage dependencies and builds from the terminal:
+<a href="http://maven.apache.org/">Maven</a> and <a href="http://www.gradle.org/">Gradle</a>. Maven uses XML to describe the project, one of my
+least favourite formats to read (I think I&#39;m faster reading binary), so
+I settled rapidly on Gradle, which is actually written in <a href="https://www.google.co.uk/webhp?sourceid=chrome-instant&amp;ion=1&amp;espv=2&amp;ie=UTF-8#q=groovy">Groovy</a>, a dynamic
+language based on Java.</p>
+
+<p>But back to the command line. I did manage to manage my projects from there -
+and it did give me a feeling of greater control than through the IDE. But it
+also revealed what a lot of work the IDE was doing. I feel like I&#39;ve been
+relatively spoiled using <a href="https://www.npmjs.org/">npm</a> and <a href="http://bundler.io/">Bundler</a> - just <code>require</code> what you
+need and it&#39;s there - magick. Java - even with <a href="http://www.gradle.org/">Gradle</a>&#39;s help - is horrible
+to look at. A long mess of <code>com.something.somethingElse.someMethodHere</code>, each
+individual damn thing being summoned individually. And me with no idea
+of how it all works. I can only imagine what it would be like without
+a dependency manager helping out.</p>
+
+<p>I (by the end) managed to deploy a horrifically simple and untested app to
+the <a href="http://aws.amazon.com/elasticbeanstalk/">AWS Elastic Beanstalk</a>. But I never managed to get mocks in <a href="https://code.google.com/p/mockito/">Mockito</a>
+off the ground. And I never really felt like I knew what I was doing.</p>
+
+<p>But after a week of Java, and a week helping out with <a href="http://nodejs.org/">Node</a> at Makers,
+getting my hands back on Ruby was lke coming home. How do I feel after
+experiencing my first <a href="http://en.wikipedia.org/wiki/Strong_and_weak_typing">strongly typed</a>, <a href="http://en.wikipedia.org/wiki/Compiled_language">compiled</a> programming language?
+Overall I&#39;m OK. I learned a lot about <a href="http://en.wikipedia.org/wiki/Software_design_pattern">design patterns</a> and the <a href="http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)">SOLID</a>
+principles - chiefly about where they&#39;re from. A lot of the language about
+interfaces makes a lot more sense when you&#39;re building an interface seperately
+and implementing it in one of perhaps many classes. And forcing me to declare
+the type of returned object for each method (if any), and the type of each
+argument, and especially whether they&#39;re public or private, made me think harder
+about methods in general.</p>
+
+<p>Travel broadens the mind!</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/10/14/segmentation_fault/">
+        Segmentation Fault
+      </a>
+    </h1>
+
+    <span class="post-date">14 Oct 2014</span>
+
+    <p>This is dedicated to my mother. It&#39;s her birthday today. It&#39;s also <a href="http://findingada.com/">Ada Lovelace
+day</a>.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Ada_Lovelace">Augusta Ada King, Countess Lovelace</a>
+was the daughter of a poet, a friend and collaborator with Babbage, a socialite
+and a wit. She also wrote the world&#39;s first computer program. If there were
+a patron saint for the creative coder it would be her.</p>
+
+<p>Ada Lovelace day is a celebration of women in Science, Technology, Engineering
+and Mathematics. It&#39;s also a day to reflect on the issues that face women who
+work in those fields. The biggest one being &quot;Why are there so few women in tech?&quot;</p>
+
+<p>Makers Academy is commited to equality - the first day here when I told my
+partner how many women were students here she was surprised; &quot;That many?&quot;. I&#39;m
+rubbish at statitics, but looking around the room you could guess at maybe
+40-50% are women. It&#39;s a good sign.</p>
+
+<p>We&#39;re holding a round table discussion on Women in Tech today (which is another
+good sign).</p>
+
+<p>One of the panel (I&#39;m awful with names) has just said that he&#39;s horrified, as
+a father, about the segmentation that&#39;s present in culture. He&#39;s raising a son
+to be as gender neutral as possible - as happy playing in a kitchen as with
+a laptop. But he&#39;s constantly battling against a culture that genders everything -
+pink and blue Kinder eggs with Barbie and Transormers respectively was his
+example.</p>
+
+<p>My mum can do the numbers challenge on &#39;Countdown&#39; faster than anyone I know.
+She&#39;d be disappointed if it wasn&#39;t done <em>before</em> Carol Vordeman pressed the
+button. She hates the anagrams. She&#39;s always hated the anagrams. I hate the anagrams
+too. I love numbers because she loves numbers. If I&#39;m good at coding then she&#39;s had
+a hand in that.</p>
+
+<p>She was told to be an English teacher when she was eighteen because she told the
+careers adviser that she quite liked English. She went on the be an amazing and
+dedicated teacher and retired this year. But what might she have done if she&#39;d
+said she liked maths? Or science? Or almost anything else? Maybe she&#39;d be
+a computer programmer now, retiring after a long life in COBOL and C and helping
+me with my JavaScript. Or maybe not - she was an amazing teacher. But who knows!</p>
+
+<p>Or, worse, if her father hadn&#39;t made her feel good and proud about being good at
+maths? Where would I be if my mum <em>hadn&#39;t</em> liked puzzles and maths?</p>
+
+<p>The problem isn&#39;t &#39;inside&#39; tech, it&#39;s <em>throughout</em> society and culture. It might
+make you dispair. It makes me dispair sometimes. But don&#39;t dispair - look, here -
+I&#39;ll summarise the roundtable &#39;take away&#39; actions for everyone to do. Fix the
+world one stupid ignorant problem at a time.</p>
+
+<h3>Women</h3>
+
+<ul>
+<li>Go talk to children about what you do.</li>
+<li>Call men out when they say something offensive or just plain wrong. They&#39;re
+proabably completely oblivious to the issue, so be polite.</li>
+</ul>
+
+<h3>Men</h3>
+
+<ul>
+<li>Listen. And be there and be nice. But mainly listen more.</li>
+<li>Don&#39;t think it&#39;s not problem; educate yourselves and recognise the
+problem.</li>
+</ul>
+
+<p>And one for everyone: &#39;Own Your Ignorance&#39; (now that&#39;s wise) - don&#39;t bluff it,
+don&#39;t fake it, don&#39;t ignore it, don&#39;t be scared of it. Your scope for
+improvement <em>is</em> your ignorance. (Maybe that should also involve owning <em>other</em>
+people&#39;s ignorance too, feeding in to the points above...)</p>
+
+<p>Oh, and one I hadn&#39;t heard before -- apparently the first version of Siri knew
+how to get you to a stripclub but had no idea how to get you emergency
+contraception.</p>
+
+<p>Sexism, whether deliberate or accidental, is, like all evil (I&#39;ll stand briefly
+with Plato on this) a consequence of ignorance of one form or another. Would you
+trust a coder who wanted to be deliberately ignorant?</p>
+
+<p>Ignorance sucks.</p>
+
+<p>Happy Birthday Mum :)</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/10/13/mocha_tests/">
+        Mocha tests with MongoDB and Mongoose
+      </a>
+    </h1>
+
+    <span class="post-date">13 Oct 2014</span>
+
+    <p>I&#39;ve been continuing my assault on Node.js - I refuse to let it lie. I decided
+two weeks ago to try and get a version of the Makers Academy chitter project (a
+twitter clone) up and running using Node, Express and - because you may as well
+go straight in at the deep end - MongoDB. Let&#39;s call it &#39;Chitter.js&#39;.</p>
+
+<p>The biggest pain I&#39;ve had is getting the tests to run. This may not sound like
+a big deal to someone on the outside, but without tests I feel a little lost --
+I mean, how do you know if what you&#39;re doing is working? Or your refactoring
+hasn&#39;t changed anything?</p>
+
+<p>Anyway, enough of the TDD rant - and maybe let&#39;s just approach this as an
+intellectual exercise. Mocha is the test framework we&#39;re using -- along with
+the Chai library of assertion (so I can write <code>expect</code>) a lot.</p>
+
+<p>Now the first thing to bear in mind is just how asynchronous <em>everything</em> is
+when working in JavaScript. You may <em>think</em> you understand, but you proaably
+don&#39;t. My entire cohort at Makers is replete with tales about testing in Mocha
+(&quot;It passed one time -- but then it didn&#39;t&quot; ... &quot;I ran it, it should&#39;ve failed.
+But it passed. Twice.&quot;).</p>
+
+<p>Happily Mocha gives us <code>done</code>. You can pass any test block (OK, not block,
+anonymous function. But I&#39;m Ruby till I die) an argument of <code>done</code>, which is
+a function you can call when the test is... well, when the test is done. It
+basically means that you can make thinga happen when you want them to happen,
+and not in faster-than-a-speeding-bullet JS timeframes.</p>
+
+<p>So, here&#39;s a test straight out of my actual project. The key thing to note is
+the fact that the expectations are sitting in the callback for the <code>save</code>
+function - you&#39;ll only want to test the database once the save has saved (i.e.
+once its calledback).</p>
+
+<p>(The following is all in CoffeeScript - which I&#39;m agnostic about. It definitely
+has the advantage of brevity, which is a quality all of its own.)</p>
+<div class="highlight"><pre><code class="language-coffee" data-lang="coffee"><span class="nx">it</span> <span class="s">&#39;saves users&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+    <span class="nv">bob = </span><span class="k">new</span> <span class="nx">user</span> <span class="p">{</span><span class="nv">username: </span><span class="s">&quot;bob&quot;</span><span class="p">,</span> <span class="nv">password: </span><span class="s">&quot;pisswird&quot;</span><span class="p">}</span>
+    <span class="nx">bob</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(error, saved_bob) -&gt;</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">saved_bob</span><span class="p">.</span><span class="nx">username</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">equal</span> <span class="s">&quot;bob&quot;</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">saved_bob</span><span class="p">.</span><span class="nx">password</span><span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">equal</span> <span class="s">&quot;pisswird&quot;</span>
+        <span class="nx">done</span><span class="p">()</span>
+</code></pre></div>
+<p>You would expect this to run, test the expectations, and then let you know it&#39;s
+all finished with the <code>done()</code> call at the end of the callback. And it does do
+exactly that -- but only so long as the expectations pass. If they don&#39;t the
+whole thing just times out - which is not what we&#39;re after.</p>
+
+<p>I tried a number of solutions to this problem (in fact the above <em>is</em> one of
+those solutions - the first attempts were even more worthless), including a few
+experiments with the <a href="http://chaijs.com/plugins/chai-as-promised">Chai as
+Promised</a> library which includes
+such great statements as <code>to.eventually.deep.equal</code> But the problem wasn&#39;t
+resolved until I hit upon the following pattern:</p>
+<div class="highlight"><pre><code class="language-coffee" data-lang="coffee">  <span class="nx">it</span> <span class="s">&#39;saves users&#39;</span><span class="p">,</span> <span class="nf">(done) -&gt;</span>
+    <span class="nv">user = </span><span class="k">new</span> <span class="nx">User</span> <span class="p">{</span><span class="nv">username: </span><span class="s">&quot;bob&quot;</span><span class="p">,</span> <span class="nv">password: </span><span class="s">&quot;pisswird&quot;</span><span class="p">}</span>
+    <span class="nx">user</span><span class="p">.</span><span class="nx">save</span> <span class="nf">(error, saved_user) -&gt;</span>
+      <span class="k">try</span>
+        <span class="nx">expect</span><span class="p">(</span> <span class="nx">saved_user</span><span class="p">.</span><span class="nx">username</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">eql</span> <span class="s">&quot;bob&quot;</span>
+        <span class="nx">done</span><span class="p">()</span>
+      <span class="k">catch</span> <span class="nx">error</span>
+        <span class="nx">done</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+</code></pre></div>
+<p>What wizardry is this? Let me try to explain...</p>
+
+<ol>
+<li>The reason everything timed out on the expectation failing was that the
+expectation statement is no longer in the scope of the <code>it()</code>.</li>
+<li>Expectations pass when they pass -- but when they fail they raise an
+exception which is caught by the <code>it()</code> function the whole lot is wrapped in.</li>
+<li>So when the statement goes out of scope, it means that the error never
+&#39;bubbles up&#39; to the <code>it</code>, the <code>done()</code> never gets called, and the whole thing
+just times out.</li>
+<li>So we need a way to send the error for the failed expectation up to the <code>it()</code>.</li>
+<li>This is where the <code>try/catch</code> comes in - if the expectation fails it raises an
+error that then gets passed to the <code>done</code> function in the catch - which the
+<code>done</code> then dutifully carries back up to the <code>it</code> with the essential error
+information about what exactly went wrong.</li>
+</ol>
+
+<p>And so now we can write tests. Hurrah! But, more importantly, we&#39;ve gained an
+insight into how testing frameworks work. When I first encountered testing in
+RSpec I went through the various patterns of test as ritual -- &#39;this is how you
+do it&#39; -- but the more I work with tests the more I&#39;m respecting the hard work
+that&#39;s gone in to making them look like magick.</p>
+
+<p>So I&#39;m really greateful for Mocha being a bit of a pain to test with over the
+last few weeks, as it&#39;s made me have to think a bit harder about testing in
+general and the dark arts of JS.</p>
+
+<p>That said, it&#39;s not done much for the development of chitter.js...</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/10/07/silence/">
+        Silence is the Enemy
+      </a>
+    </h1>
+
+    <span class="post-date">07 Oct 2014</span>
+
+    <p>I&#39;ve been thinking about this post for a few weeks, but <a href="@benjilanyado">Benji
+Lanyado</a> from <a href="https://www.picfair.com/">Picfair</a> has just given
+a great talk about starting his business. Great for a number of reasons (he&#39;s
+a very charismatic speaker to begin with), but the key thing I&#39;m taking home
+with me is what he&#39;s just said about, well - talking.</p>
+
+<blockquote>
+<p>Talk to everyone. Get out of your flat.</p>
+</blockquote>
+
+<p>It&#39;s easy to forget that in a few weeks I&#39;m not going to be around here at
+Makers. And that the best thing - the <em>best</em> thing - about being here is talking
+to people.</p>
+
+<p>At every stage of coding - whether in solving a problem, learning a language,
+fixing a bug - silence is the enemy. You know your pairing is going wrong when
+nobody is saying anything. Say <em>something</em>, even if you&#39;re just restating the
+problem. Pairing is made to make you talk about what&#39;s going on - making your
+brain work around the problem by putting it in your mouth. How incredible is
+that?</p>
+
+<p>This becomes really apparent when you&#39;ve been coding on your own for
+a while. You tend to find yourself going crazy over small bugs that are really
+apparent when you&#39;re looking at them in someone else&#39;s code. This is why <a href="http://c2.com/cgi/wiki?RubberDucking">rubber
+ducking</a> happens - that experience you&#39;ve
+had of going to someone for help and suddenly realizing the solution halfway
+through explaing the problem to them - they&#39;ve become your rubber duck (remember
+to thank them with a quack).</p>
+
+<p>Same goes for teaching - the number of things I&#39;ve got down solidly by having to
+explain it to someone, out loud. It&#39;s mind blowing. You can&#39;t skip over anything
+when you&#39;re talking, your brain can&#39;t trick you into false confidence by waving
+its hands over a bit you don&#39;t understand. I gave a talk about bitwise operators
+a few days ago - I thought I had it all covered, but when I got a question about
+<a href="http://en.wikipedia.org/wiki/Two&#x27;s_complement">two&#39;s complement</a> it became
+<em>really</em> apparent that I didn&#39;t have a clue. Embarassing? Yes, a little - but
+now at least I know where I&#39;m ignorant, rather than being surprised about it
+later.</p>
+
+<p>Silence is the enemy of good and happy coding. Keep talking - even if it&#39;s just
+to yourself.</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/09/28/the_JS_dragon/">
+        Slaying The JavaScript Dragon
+      </a>
+    </h1>
+
+    <span class="post-date">28 Sep 2014</span>
+
+    <blockquote>
+<p>Hey folks!</p>
+
+<p>The Node and JavaScript dragons have been hard to fight… Do you remember you
+used to look at precious stones?</p>
+</blockquote>
+
+<p>That&#39;s how Enrique&#39;s email introduced the Friday challenge at the end of week
+8 at Makers. Week 8 has been Hell Week. It was a beasting. It was hard. It was
+NodeJS.</p>
+
+<p>I was looking forward to this week more than any other - it&#39;s a great idea. More
+and more devs and companies are using Node, Rails is so opinionated as to be
+stifiling - so why not do another week of JavaScript dedicated to Node? Throw
+some CoffeeScript in there for good measure along with a seasoning of WebSockets
+and you&#39;ve got a recipe for succeess.</p>
+
+<p>Nope. See above. You&#39;ve got a recipe for Hell Week.</p>
+
+<p>JavaScript was a severe shock to the system for everyone. I was already
+relatively comfortable with the language - it wasn&#39;t entirely new to me. But
+I still struggled with getting Express and Node.</p>
+
+<p>I knew that JS was asynchronous - but I didn&#39;t really <em>know</em> it, if you take my
+meaning. The difference between Sinatra and Express became apparent from the
+beginning. Where on Sinatra it was fairly easy to get RSpec and Capybara
+performing tests out of the box, with Mocha it felt like I was contantly and
+actively fighting against the framework. Callbacks came back unexpectedly or not
+at all. Tests passed - twice - when they should&#39;ve failed.</p>
+
+<p>The final straw came when we collectively couldn&#39;t get read/write operations
+working consistently. I suddenly realised how spoiled I&#39;ve been by using Ruby,
+RSpec et al -- these are really mature pieces of software that act as you
+expect. I feel that Node and Express are amazing - don&#39;t get me wrong. But
+I&#39;ve found it nigh-on impossible to test them.</p>
+
+<p>And if you can&#39;t test it, then it doesn&#39;t exist.</p>
+
+<p>I&#39;m still pressing on with Node/Express on the side, because I do really enjoy
+the environment to work in. I just need to slay the Mocha dragon and everything
+will be fine.</p>
+
+<p>The Ruby refresher that was presented as the weekend work was like a beautiful
+sorbet - so refreshing after the hard week. As I answered the questions with
+simple one-liner methods I realised exactly how much I&#39;d learned in the last
+eight weeks. I feel like I&#39;ve got a firm foothold in the Ruby world.</p>
+
+<p>Now on to the Mocha.</p>
+
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <a class="pagination-item older" href="/page4">Older</a>
+  
+  
+    
+      <a class="pagination-item newer" href="/page2">Newer</a>
+    
+  
+</div>
+    </div>
+
+  </body>
+</html>

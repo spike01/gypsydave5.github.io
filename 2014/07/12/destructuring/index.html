@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Destructuring in a Method Block &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Destructuring in a Method Block</h1>
+  <span class="post-date">12 Jul 2014</span>
+  <p>I went from genius to idiot - very rapidly - when looking at Enumerable#map and
+#inject in <a href="https://rubymonk.com/">Ruby Monk</a>, a free resource to help learn ruby that I&#39;ve
+found really useful. Let&#39;s start with &#39;genius&#39; (although not really genius, more
+wrong but lucky).</p>
+
+<p>The <a href="https://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/44-collections/lessons/98-iterate-filtrate-and-transform#solution4313">question</a> was as follows:</p>
+
+<blockquote>
+<p>Exploit the fact that map always returns an array: write a method <code>hash_keys</code>
+that accepts a hash and maps over it to return all the keys in a linear Array.</p>
+</blockquote>
+
+<p>Exciting, right?</p>
+
+<p>The solution that RM gave was this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hash_keys</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="nb">hash</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">pair</span><span class="o">|</span> <span class="n">pair</span><span class="o">.</span><span class="n">first</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>But I went for:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hash_keys</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="nb">hash</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="o">|</span> <span class="n">key</span><span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Not much difference, but enough. I had become confused when I entered my code,
+thinking more about the <code>each_with_index</code> method mentioned in the same page
+above. I was forgetting that <code>#map</code> would be sending back a single value, an
+array of the key-value pair. Ruby Monk&#39;s solution used that fact to use the
+method <code>#first</code> on the array, to get the first element (the key) out.</p>
+
+<p>But, by chance, my solution worked - it split the array by telling the
+block for map that it would be getting two arguments - checking with the good
+people on the #ruby channel on IRC (a chap called bannisterfiend to be precise),
+this is <a href="http://tony.pitluga.com/2011/08/08/destructuring-with-ruby.html"><em>destructuring</em></a>, binding a set of values to
+a corresponding set of values that you can normally bind to a single variable
+(that&#39;s the definition as given in <a href="http://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node252.html">Common Lisp</a>, but makes sense here).</p>
+
+<p>What we&#39;re seeing is this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span>
+<span class="n">x</span> <span class="c1"># =&gt; 1</span>
+<span class="n">y</span> <span class="c1"># =&gt; 2</span>
+</code></pre></div>
+<p>But done as a loop for all the arrays pulled out of the hash by <code>#map</code>. Tony
+Pitluga sings the praises of destructuring block arguments (which is what this
+is) in his longer article on <a href="http://tony.pitluga.com/2011/08/08/destructuring-with-ruby.html">destructuring in Ruby</a>.</p>
+
+<p>There&#39;s an improvement in the semantics of the method (would you rather have
+<code>key</code> or <code>pair.first</code>?) and a saving of writing/time in any later work you might
+want to do on the values. Of course, we wouldn&#39;t want to do this to longer
+arrays - too many elements to bind to values.</p>
+
+<p>Unless we used the &#39;unarray&#39; or, &#39;star&#39; or (best name evar) <a href="http://endofline.wordpress.com/2011/01/21/the-strange-ruby-splat/">splat
+operator</a> to collect some of the other elements.</p>
+
+<p>Consider:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="n">j</span>
+<span class="n">x</span> <span class="c1"># =&gt; 1</span>
+<span class="n">y</span> <span class="c1"># =&gt; [2,3,4,5,6]</span>
+</code></pre></div>
+<p>There&#39;s a lot more on the magic of the splat in the second edition of <a href="http://www.manning.com/black2/">The Well
+Rounded Rubyist</a> which has just been published (and which I&#39;m enjoying
+immensely).</p>
+
+<p>OK, I&#39;ll write up my other mistake (the one that broke the <code>#map</code> block) later in
+the week.</p>
+
+<p>PS - noticed when getting links for this post that Ruby 2.0 introduces the
+double-splat operator for <a href="http://stackoverflow.com/questions/18289152/what-does-double-splat-operators-do-in-ruby">turning keyword-value pairs in argument lists into
+a hash</a>. Which is also exciting.</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>

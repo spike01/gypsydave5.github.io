@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Bitwise and Permission &middot; gypsydave5
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          gypsydave5
+        </a>
+      </h1>
+      <p class="lead">The blog of David Wickes, software developer</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="https://github.com/gypsydave5">GitHub</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/gypsydave5">Twitter</a>
+      <a class="sidebar-nav-item" href="mailto:dave@gypsydave5.com">Email</a>
+
+    </nav>
+
+    <p>&copy; 2015. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div>
+  <h1 class="post-title">Bitwise and Permission</h1>
+  <span class="post-date">16 Aug 2014</span>
+  <p>So I thought I&#39;d try and write about what happened last day of the first week at
+<a href="http://www.makersacademy.com/">Makers</a>, as mentioned in <a href="/2014/08/09/makers-day-five/">my last post</a>, about the failing RSpec test for
+the Unix task. Just because I learned a lot about both permissions on a Unix
+like system, about bitwise operators in Ruby, about how RSpec works, and how
+(not) to fix things.</p>
+
+<p>So... the test checking file permissions in a directory by running the following
+RSpec test.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">it</span> <span class="s2">&quot;Should only allow the owner to change into my/private/files&quot;</span> <span class="k">do</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;my/private/files&quot;</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000010</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000001</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre></div>
+<p>When we first ran it, it failed on the first expectation above - even though we
+knew that the file had the right permissions. So what was going on - both in
+terms of how it was meant to work, and why it wasn&#39;t working?</p>
+
+<h2>Permissions</h2>
+
+<p>Let&#39;s start with that first expectation.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+</code></pre></div>
+<p><code>permissions</code> is a variable representing the result of <code>File.stat(folder).mode</code>,
+where <code>folder</code> is the directory being checked. The <code>mode</code> method <a href="http://www.ruby-doc.org/core-2.1.2/File/Stat.html#method-i-mode">returns the
+permissions-bits of the Unix <code>stat</code> command</a> - which you can take
+a look at in detail with a quick <code>man stat -a</code> (as it&#39;s <code>stat(2)</code> you&#39;re looking
+at.</p>
+
+<p>What does all this mean? It means that we&#39;re getting back an integer which
+represents the current permissions on the file. And how does an integer
+represent permissions? If you&#39;ve been using <code>chmod</code> to change permission with
+commands like <code>chmod go-w filename</code> (remove write from group and others), well
+- you&#39;ve been missing a trick and a whole lot of fun.</p>
+
+<p>The fun way to set permission is using the <em>absolute mode</em>, which sets the
+permissions absolutely every time you use it (rather than relatively removing or
+adding them from the current state - see <code>man chmod</code> for more). There are three
+settings (read, write and execute) for each of the three permissions groups
+(user, group, other) on a file. Each of those permissions sets is represented
+by a single octal digit (from 1 to 7), and the settings are literally added to
+each one - the setting for read is 4, write is 2 and execute is 1.</p>
+
+<p>Any combination of these numbers will produce a unique number - read + write
+= 6, write + execute = 3, just read = 4. And you can combine them into
+a three-digit octal number which represents the file permissions for any given
+file, where the first digit is user, the second is group and the third is other.</p>
+
+<p>In practice: <code>chmod 777</code> gives permissions for everything. <code>chmod 644</code> gives
+read/write to user, and just read to group and other. <code>755</code> is
+read/write/execute for user, and just read/execute for the group and other.</p>
+
+<h2>The science &quot;bit&quot;</h2>
+
+<p>Notice how none of the octal numbers ever &#39;carry&#39; over to the next one when
+they&#39;re added together? This is a piece of computer science wizzardry - because
+they&#39;re in octal, I can look at them as both an actual integer or as a series of
+switches (or maybe dials), setting permissions for each permissions group up and
+down. Thing is, for your computer, these two ways of looking at it <em>are exactly
+the same</em>.</p>
+
+<p><code>777</code> in decimal notation is <code>511</code> (do the maths if you like), but also has
+a binary representation of... <code>111111111</code>. Hey, look - all the 1s! It&#39;s like all
+the switches are turned on - and they really are!. This is because octal digits
+map really neatly to binary digits - they&#39;re a three-digit long collection of
+binary digits. &#39;Binary digit&#39; is a bit of a mouthful (pun intended), so let&#39;s
+use the shorthand word - bit. Each set of three bits represents one of the
+permission statuses for a particular permissions set. So the first three 1s
+above are the permissions for the user, and in particular the first one is the
+read, second write and the third the execute - all set to 1 or &#39;on&#39;.</p>
+
+<p>(Experiment in a Ruby repl like pry or irb - you can switch between binary,
+octal and decimal really quickly in Ruby. Any integer you type in with a leading
+<code>0</code> (say <code>0777</code>) will automatically be translated as an octal (<code>0777</code> will
+return <code>511</code> - the decimal representation). And you can flip to a binary
+representation with <code>to_s(2)</code> - the <code>(2)</code> setting the base of the conversion, so
+that <code>0777.to_s(2)</code> will return <code>&quot;111111111&quot;</code>. Try some other numbers!)</p>
+
+<p>So when <code>mode</code> returns an integer, it&#39;s the integer that represents the current
+permissions on that file - a file with read, write and exeute permissions for
+all the sets would give you the number <code>511</code> (which is the same as <code>777</code> and
+<code>111111111</code>).</p>
+
+<h2>Bitwise</h2>
+
+<p>Now we get to the fun stuff - <code>permissions &amp; 0000100</code>. What&#39;s the <code>&amp;</code> doing? And
+those leading 0s? As mentioned above, the leading zeroes are just Ruby&#39;s way of
+saying that this number is in octal. So (repls open) <code>0000100</code> just becomes
+<code>64</code>. But the thing doing the work here is <code>&amp;</code> - not our friendly Boolean <code>&amp;&amp;</code>,
+but a differnent beast - this is the <a href="http://en.wikipedia.org/wiki/Bitwise_operation#AND"><strong>bitwise AND</strong></a>.</p>
+
+<p>Bitwise operators, of which <code>&amp;</code> is an example, really tear the lid off the
+computer and get a little bit closer to the bare metal. Computers aren&#39;t made of
+objects, or lines of code, strings and integers. They&#39;re made of 0s and 1s. And
+bitwise operators work on 0s and 1s - or, specifically, binary numbers.</p>
+
+<p>Let&#39;s take a pair of binary numbers, say <code>111</code> and <code>100</code> (known to you and me as
+7 and 4). Bitwise AND compares the bit in each position, and asks the question
+&quot;are you both <code>1</code>?&quot; If they are, you get a <code>1</code>, otherwise it&#39;s a <code>0</code>. So <code>111
+&amp; 100</code> will return <code>100</code> as the third bit (counting from the right) is the only
+one that matches in each number</p>
+
+<p>(Think of it just like a regular logical AND - but <code>1</code> is <code>true</code> and <code>0</code> is
+<code>false</code> - running on each bit position.)</p>
+
+<p>We now have enough knowledge to look at the test again</p>
+
+<h2>Back to the test</h2>
+
+<p>To recap, the test looks like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="n">it</span> <span class="s2">&quot;Should only allow the owner to change into my/private/files&quot;</span> <span class="k">do</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="s2">&quot;my/private/files&quot;</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000010</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000001</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre></div>
+<p>The key line being:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">expect</span><span class="p">(</span><span class="n">permissions</span> <span class="o">&amp;</span> <span class="mo">0000100</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_true</span>
+</code></pre></div>
+<p>Now let&#39;s pretend that the directory currently has permissions of <code>700</code> - read,
+write and execute (&#39;execute&#39; is &#39;open&#39; for a folder -- allowing you to <code>cd</code> into
+it). We run <code>mode</code> on it and get the permissions integer back - in octal, that&#39;s
+<code>700</code> again. We then run a bitwise AND - the <code>&amp;</code> against it using the octal
+number <code>100</code> (all those <code>0</code>s at the beginning are just saying &#39;hey! I&#39;m octal!&#39;
+to Ruby).</p>
+
+<p>Converting octal to binary, <code>700</code> is <code>111000000</code>, and <code>100</code> is <code>1000000</code> (Don&#39;t
+trust me? Fire up a repl!). Maybe think of <code>1000000</code> as <code>001000000</code> for the next
+bit. Comparing the two binary numbers, the only place they match is at the
+seventh bit - and so we get <code>1000000</code> as the returned value. Which, in octal is
+<code>100</code> and in decimal is <code>64</code>.</p>
+
+<p>The neat thing about this is that it will return <code>64</code> for any permission set
+that includes user executable permission on a file - <code>700</code>, <code>500</code>, <code>177</code>, <code>355</code>,
+<code>777</code> -- they <em>all</em> work. Say we&#39;ve got <code>355</code> - in binary that&#39;s <code>011101101</code>.
+<code>&amp;</code>ing it with <code>001000000</code> again will give us... <code>001000000</code> again - hey, it&#39;s
+<code>64</code>! Try it with as many numbers as you like.</p>
+
+<p>The other two tests are to check whether the Group or Other sets also have
+execute permission -- that&#39;s <code>010</code> becoming <code>000001000</code> and <code>001</code> to
+<code>000000001</code>, bitwised against the permissions making sure they <em>don&#39;t</em> have that
+bit set. They come out as <code>0</code> -- no matches!</p>
+
+<p>And so that&#39;s how it all hangs together. But why didn&#39;t it work? Simply put
+everyone on the course had just installed the latest version of RSpec, and
+<code>be_true</code> is not in the latest version&#39;s syntax. So all we needed to do was
+change <code>be_true</code> over to <code>eq(64)</code> and it would&#39;ve been fixed.</p>
+
+<p>Of course, that&#39;s not what we <em>actually</em> did. What we did was hack around until
+it worked, and even then we ended up with <code>is_not eq(0)</code> instead of the neater
+(and more correct) answer of <code>eq(64)</code>. It was only when thinking about it over
+the weekend that I really got a handle on what was going on</p>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/lazy-eval-and-memo/">
+            (Basic) Lazy Evaluation and Memoization in JavaScript
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/03/21/brew-cask/">
+            Brew Cask
+            <small>21 Mar 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/02/19/not-quite-js-currying/">
+            (not quite) Currying in JavaScript
+            <small>19 Feb 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+    </div>
+
+  </body>
+</html>
